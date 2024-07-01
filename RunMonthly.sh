@@ -27,4 +27,7 @@ done
 echo $(date)
 ./MonthlyAnalysis.sh
 echo $(date)
+./CompressStats.sh $month
+echo $(date)
 gzip -rk9 Stats/
+echo $(date)
