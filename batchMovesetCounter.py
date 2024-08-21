@@ -40,7 +40,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 	happinesses = {}
 	spreads = {}
 	moves = {}
-    teraTypes = {}
+	teraTypes = {}
 	movesets = []
 	weights = []
 	rawCount = 0
@@ -133,7 +133,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 				happinesses[happiness]=0.0
 			happinesses[happiness]+=weight
 
-            if moveset['teraType'] not in keyLookup:
+			if moveset['teraType'] not in keyLookup:
 				moveset['teraType'] = 'nothing'
 			if moveset['teraType'] not in teraTypes:
 				teraTypes[moveset['teraType']] = 0.0
@@ -179,7 +179,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		'Items': items,
 		'Spreads': spreads,
 		'Moves': moves,
-        'Tera Types': teraTypes,
+		'Tera Types': teraTypes,
 		'Happiness' : happinesses,
 		'Teammates': teammates,
 		'Checks and Counters': cc}
