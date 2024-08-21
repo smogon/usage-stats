@@ -40,6 +40,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 	happinesses = {}
 	spreads = {}
 	moves = {}
+    teraTypes = {}
 	movesets = []
 	weights = []
 	rawCount = 0
@@ -132,6 +133,12 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 				happinesses[happiness]=0.0
 			happinesses[happiness]+=weight
 
+            if moveset['teraType'] not in keyLookup:
+				moveset['teraType'] = 'nothing'
+			if moveset['teraType'] not in teraTypes:
+				teraTypes[moveset['teraType']] = 0.0
+			teraTypes[moveset['teraType']] = teraTypes[moveset['teraType']] + weight
+
 	count = sum(abilities.values())
 	gxes=list(reversed(sorted(gxes.values())))
 
@@ -172,6 +179,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		'Items': items,
 		'Spreads': spreads,
 		'Moves': moves,
+        'Tera Types': teraTypes,
 		'Happiness' : happinesses,
 		'Teammates': teammates,
 		'Checks and Counters': cc}
@@ -215,7 +223,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 
 	print separator
 
-	for x in ['Abilities','Items','Spreads','Moves','Teammates','Checks and Counters']:
+	for x in ['Abilities','Items','Spreads','Moves','Tera Types','Teammates','Checks and Counters']:
 		table = []
 		line = ' | '+x
 		while len(line) < tablewidth+2:
