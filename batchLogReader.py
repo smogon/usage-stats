@@ -288,7 +288,7 @@ def LogReader(filename,tier,movesets,ratings):
 				'level':poke['level'],
 				'ability':poke['ability'],
 				'item':poke['item'],
-				'teraType':poke['teraType']
+				'teraType':poke['teraType'],
 				'nature':poke['nature'],
 				'ivs':poke['ivs'],
 				'evs':poke['evs'],
