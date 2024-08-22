@@ -3,15 +3,15 @@
 import string
 import math
 import js2py
-import urllib2
-import ujson as json
+import urllib
+import orjson as json
 
 def keyify(s):
 	sout = ''
 	for c in s:
-		if c in string.uppercase:
+		if c in string.ascii_uppercase:
 			sout = sout + c.lower()
-		elif c in string.lowercase + '1234567890':
+		elif c in string.ascii_lowercase + '1234567890':
 			sout = sout + c
 	return sout
 
@@ -61,16 +61,16 @@ def readTable(filename):
 
 
 def getFormats():
-	js=urllib2.urlopen("https://raw.githubusercontent.com/Zarel/Pokemon-Showdown/master/config/formats.js").read()
-	print 'Updating tiers'
+	js=urllib.request.urlopen("https://raw.githubusercontent.com/Zarel/Pokemon-Showdown/master/config/formats.js").read()
+	print('Updating tiers')
 	return json.loads(js2py.eval_js('exports={},'+js+'JSON.stringify(exports.Formats)'))
 
 def getBattleFormatsData():
-	#js=urllib2.urlopen("https://play.pokemonshowdown.com/data/formats-data.js").read()
+	#js=urllib.request.urlopen("https://play.pokemonshowdown.com/data/formats-data.js").read()
 	file = open('formats-data.js')
 	js = file.read()
 	file.close()
-	#print 'Updating tiers'
+	#print('Updating tiers')
 	return json.loads(js2py.eval_js('exports={},'+js+'JSON.stringify(exports.BattleFormatsData)'))
 
 aliases={

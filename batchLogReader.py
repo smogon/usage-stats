@@ -5,22 +5,21 @@
 
 import string
 import sys
-#import ujson as json
-import json
+import orjson as json
 import gzip
 import copy
-#import cPickle as pickle
 import math
 import os
 import ladderdev.Glicko as Glicko
-import cPickle as pickle
+import pickle
 
 from common import *
 from TA import *
 
 file = open('keylookup.json', 'rb')
-keyLookup = json.load(file)
+keyLookup = json.loads(file.read())
 file.close()
+
 
 def getTeamsFromLog(log,mrayAllowed):
 	teams={}
@@ -37,7 +36,7 @@ def getTeamsFromLog(log,mrayAllowed):
 				sys.stderr.write('Problem with '+filename+'\n')
 				return False
 			#very odd that these == needed--I've seen ".Species", "(Species)", "species", "Species)", "SPECIES"...
-			if species[0] not in string.lowercase + string.uppercase:
+			if species[0] not in string.ascii_lowercase + string.ascii_uppercase:
 				species=species[1:]
 			while species[len(species)-1] in ')". ':
 				species=species[:len(species)-1]
@@ -119,7 +118,7 @@ def getTeamsFromLog(log,mrayAllowed):
 						ability=mega[2]
 						break
 
-			if species[0] in string.lowercase or species[1] in string.uppercase:
+			if species[0] in string.ascii_lowercase or species[1] in string.ascii_uppercase:
 				species = species.title()
 
 			for s in aliases: #combine appearance-only variations and weird PS quirks
@@ -192,7 +191,7 @@ def LogReader(filename,tier,movesets,ratings):
 	#		return False
 
 	if 'turns' not in log.keys():
-		print filename+' has no turn count'
+		print(filename+' has no turn count')
 		return False
 		
 
@@ -275,8 +274,8 @@ def LogReader(filename,tier,movesets,ratings):
 			#	os.makedirs(d)
 			#msfile=open(outname,'ab')
 			if keyify(poke['species']) == 'meloettapirouette':
-				print filename
-			writeme={'trainer':trainer.encode('ascii', 'ignore'),
+				print(filename)
+			writeme={'trainer':trainer,
 				'level':poke['level'],
 				'ability':poke['ability'],
 				'item':poke['item'],
@@ -393,7 +392,7 @@ def LogReader(filename,tier,movesets,ratings):
 					else:
 						speciesBase = species
 
-					for i in xrange(6):
+					for i in range(6):
 						if ts[i][1].startswith(speciesBase):
 							species = ts[i][1]
 							active[0] = i
@@ -443,7 +442,7 @@ def LogReader(filename,tier,movesets,ratings):
 					else:
 						speciesBase = species
 
-					for i in xrange(6,12):
+					for i in range(6,12):
 						if ts[i][1].startswith(speciesBase):
 							species = ts[i][1]
 							active[1] = i
@@ -475,7 +474,7 @@ def LogReader(filename,tier,movesets,ratings):
 			if len(line) < 2 or not line.startswith('|'):
 				continue
 			parsed_line = [segment.strip() for segment in line.split('|')]
-			#print line
+			#print(line)
 			#identify what kind of message is on this line
 			if len(parsed_line) < 2:
 				sys.stderr.write('Problem with '+filename+'\n')
@@ -557,7 +556,7 @@ def LogReader(filename,tier,movesets,ratings):
 							sys.stderr.write(str(nicks)+"\n")
 							return False
 						
-				move = line[7+5*spacelog+len(found):string.find(line,"|",7+5*spacelog+len(found))-1*spacelog]
+				move = line[7+5*spacelog+len(found): line.find("|", 7+5*spacelog+len(found)) - 1*spacelog]
 				if move in ["Roar","Whirlwind","Circle Throw","Dragon Tail"]:
 					roar = True
 				elif move in ["U-Turn","U-turn","Volt Switch","Baton Pass"]:
@@ -565,9 +564,9 @@ def LogReader(filename,tier,movesets,ratings):
 
 			elif linetype == "-enditem": #check for Red Card, Eject Button
 				#search for relevant items
-				if string.rfind(line,"Red Card") > -1:
+				if line.rfind("Red Card") > -1:
 					roar = True
-				elif string.rfind(line,"Eject Button") > -1:
+				elif line.rfind("Eject Button") > -1:
 					uturn = True
 
 			elif linetype == "faint": #KO
@@ -626,7 +625,7 @@ def LogReader(filename,tier,movesets,ratings):
 						else:
 							speciesBase = species
 
-						for i in xrange(6*(int(line[p])-1),6*int(line[p])):
+						for i in range(6*(int(line[p])-1),6*int(line[p])):
 							if ts[i][1].startswith(speciesBase):
 								species = ts[i][1]
 								found = True
@@ -733,13 +732,13 @@ def LogReader(filename,tier,movesets,ratings):
 						else:
 							speciesBase = species
 
-						for i in xrange(6*(int(line[p])-1),6*int(line[p])):
+						for i in range(6*(int(line[p])-1),6*int(line[p])):
 							if ts[i][1].startswith(speciesBase):
 								species = ts[i][1]
 								found = True
 								break
 						if not found:
-							print ts
+							print(ts)
 							sys.stderr.write('Problem with '+filename+'\n')
 							sys.stderr.write('(Pokemon not in ts) (4)\n')
 							sys.stderr.write(str([ts[11*(int(line[p])-1)][0],species])+'\n')
@@ -755,7 +754,7 @@ def LogReader(filename,tier,movesets,ratings):
 
 	writeme = {}
 	
-	writeme['p1'] = {'trainer':ts[0][0].encode('ascii','replace')}
+	writeme['p1'] = {'trainer':ts[0][0]}
 	
 	teamtags = teams['p1team'][len(teams['p1team'])-1]
 	for x in teamtags.keys():
@@ -771,7 +770,7 @@ def LogReader(filename,tier,movesets,ratings):
 			sys.stderr.write(str(ts)+"\n")
 			return False
 
-	writeme['p2'] = {'trainer':ts[len(ts)-1][0].encode('ascii','replace')}
+	writeme['p2'] = {'trainer':ts[len(ts)-1][0]}
 	teamtags = teams['p2team'][len(teams['p2team'])-1]
 	for x in teamtags.keys():
 		writeme['p2'][x] = teamtags[x]
@@ -818,7 +817,7 @@ def main(argv):
 				ratings = json.loads(open(argv[4]).readline())
 			except:
 				ratings = {}
-			print ratings
+			print(ratings)
 
 	outname = "Raw/"+tier#+".txt"
 	d = os.path.dirname(outname)
@@ -828,7 +827,7 @@ def main(argv):
 	movesets={}
 	count=0
 	for filename in os.listdir(argv[1]):
-		#print filename
+		#print(filename)
 		x = LogReader(argv[1]+'/'+filename,tier,movesets,ratings)
 		if x:
 			writeme.append(x)
@@ -837,7 +836,8 @@ def main(argv):
 			if count % 10000 == 0:
 				outname = "Raw/"+tier#+".txt"
 				outfile=gzip.open(outname,'ab')
-				outfile.write(json.dumps(writeme)+'\n')
+				output = json.dumps(writeme).decode('utf-8') +'\n'
+				outfile.write(output.encode())
 				outfile.close()
 
 				#write to moveset file
@@ -855,7 +855,8 @@ def main(argv):
 	if writeme:
 		outname = "Raw/"+tier#+".txt"
 		outfile=gzip.open(outname,'ab')
-		outfile.write(json.dumps(writeme)+'\n')
+		output = json.dumps(writeme).decode('utf-8')+'\n'
+		outfile.write(output.encode())
 		outfile.close()
 
 		#write to moveset file
@@ -872,7 +873,7 @@ def main(argv):
 		for player in ratings.keys():
 			Glicko.newRatingPeriod(ratings[player])
 		ratingfile=open(argv[4],'w+')
-		ratingfile.write(json.dumps(ratings))
+		ratingfile.write(json.dumps(ratings).decode('utf-8'))
 		ratingfile.close()
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 #should be much more efficient, as TA.py and the files it requires need only be loaded once per run.
 
 import sys
-import json
+import orjson as json
 import os
 
 def LogReader(filename):
@@ -41,4 +41,4 @@ for folder in sorted(os.listdir(sys.argv[1])):
 			p1,p2,team1,team2,whowon,endType,turns=LogReader(sys.argv[1]+folder+'/'+filename)
 		except:
 			continue
-		print folder+','+p1.encode('utf-8')+','+str(team1)+','+p2.encode('utf-8')+','+str(team2)+','+str(whowon)+','+endType.encode('utf-8')+','+str(turns)
+		print(folder+','+p1.encode('utf-8')+','+str(team1)+','+p2.encode('utf-8')+','+str(team2)+','+str(whowon)+','+endType.encode('utf-8')+','+str(turns))

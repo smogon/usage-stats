@@ -3,9 +3,9 @@
 
 import sys
 import gzip
-import json
+import orjson as json
 import math
-import cPickle as pickle
+import pickle
 
 def incorrectSyntax():
 	sys.stderr.write('Incorrect syntax.\n')
@@ -114,10 +114,10 @@ for player in ratings.keys():
 printme='Username,nBattles,nWins'
 for system in systems:
 	printme+=','+ratingSystems[system].headers()
-print printme
+print(printme)
 
 for player in ratings.keys():
 	printme=player+','+str(ratings[player]['nBattles'])+','+str(ratings[player]['nWins'])
 	for system in systems:
 		printme+=','+ratingSystems[system].printRating(ratings[player][system])
-	print printme
+	print(printme)

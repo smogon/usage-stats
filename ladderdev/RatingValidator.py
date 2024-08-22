@@ -3,7 +3,7 @@
 
 import gzip
 import sys
-import json
+import orjson as json
 
 from common import *
 
@@ -49,7 +49,7 @@ for line in raw:
 			else:
 				probWin = victoryChance(battle['p2']['rating']['r'],battle['p2']['rating']['rd'],battle['p1']['rating']['r'],battle['p1']['rating']['rd'])
 				betterPlayer='p2'				
-			for i in xrange(len(bins)):
+			for i in range(len(bins)):
 				if probWin < bins[i][0]+binSize/2:
 					bins[i][1]=bins[i][1]+probWin
 					if battle[betterPlayer]['outcome'] == 'win':
@@ -57,5 +57,5 @@ for line in raw:
 					break
 
 for bin in bins:
-	print bin[0],bin[1],bin[2]
+	print(bin[0],bin[1],bin[2])
 	

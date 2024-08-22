@@ -3,9 +3,9 @@
 
 import sys
 import gzip
-import json
+import orjson as json
 import math
-import cPickle as pickle
+import pickle
 
 systems = sys.argv[1].split(',')
 try:
@@ -111,7 +111,7 @@ x=[]
 for system in systems:
 	printme+=','+system
 	x.append(system)
-print printme
+print(printme)
 for player in ladder.keys():
 	r=ladder[player]['rating']['r']
 	rd=ladder[player]['rating']['rd']
@@ -122,4 +122,4 @@ for player in ladder.keys():
 	printme=player+','+str(len(trajectories[player]))+','+str(wltCounts[player][0])+','+str(r)+','+str(rd)+','+str(rpr)+','+str(rprd)+','+str(acre)+','+str(gxe)
 	for system in x: #probably could just do system in systems, but this is safer
 		printme+=','+str(ladderRatingSystem[system].getSortable(ladder[player]['scores'][system]))
-	print printme
+	print(printme)

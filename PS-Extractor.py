@@ -3,8 +3,8 @@
 """The goal of this script is to take a json version of the "exports" object
 used on Pokemon Showdown and pull out the data that's needed for the scripts."""
 
-import json
-import cPickle as pickle
+import orjson as json
+import pickle
 from onix import contexts
 
 ctx = contexts.get_standard_context(force_refresh=True)
