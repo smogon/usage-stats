@@ -41,4 +41,4 @@ for folder in sorted(os.listdir(sys.argv[1])):
 			p1,p2,team1,team2,whowon,endType,turns=LogReader(sys.argv[1]+folder+'/'+filename)
 		except:
 			continue
-		print(folder+','+p1.encode('utf-8')+','+str(team1)+','+p2.encode('utf-8')+','+str(team2)+','+str(whowon)+','+endType.encode('utf-8')+','+str(turns))
+		print(folder+','+p1+','+str(team1)+','+p2+','+str(team2)+','+str(whowon)+','+endType+','+str(turns))
