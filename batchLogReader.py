@@ -274,7 +274,7 @@ def LogReader(filename,tier,movesets,ratings):
 			#msfile=open(outname,'ab')
 			if keyify(poke['species']) == 'meloettapirouette':
 				print(filename)
-			writeme={'trainer':trainer,
+			writeme={'trainer':trainer.encode('ascii', 'ignore').decode('utf-8'),
 				'level':poke['level'],
 				'ability':poke['ability'],
 				'item':poke['item'],
@@ -835,7 +835,7 @@ def main(argv):
 			if count % 10000 == 0:
 				outname = "Raw/"+tier#+".txt"
 				outfile=gzip.open(outname,'ab')
-				outfile.write(json.dumps(writeme) +'\n')
+				outfile.write((json.dumps(writeme) +'\n').encode('utf-8'))
 				outfile.close()
 
 				#write to moveset file
@@ -845,7 +845,7 @@ def main(argv):
 					if not os.path.exists(d):
 						os.makedirs(d)
 					msfile=gzip.open(outname,'ab')		
-					msfile.write(json.dumps(movesets[species]))
+					msfile.write(json.dumps(movesets[species]).encode('utf-8'))
 					msfile.close()
 
 				writeme = []
@@ -853,7 +853,7 @@ def main(argv):
 	if writeme:
 		outname = "Raw/"+tier#+".txt"
 		outfile=gzip.open(outname,'ab')
-		outfile.write(json.dumps(writeme)+'\n')
+		outfile.write((json.dumps(writeme)+'\n').encode('utf-8'))
 		outfile.close()
 
 		#write to moveset file
@@ -863,7 +863,7 @@ def main(argv):
 			if not os.path.exists(d):
 				os.makedirs(d)
 			msfile=gzip.open(outname,'ab')		
-			msfile.write(json.dumps(movesets[species]))
+			msfile.write(json.dumps(movesets[species]).encode('utf-8'))
 			msfile.close()
 
 	if ratings != None:
