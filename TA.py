@@ -7,7 +7,7 @@
 
 import string
 import sys
-import orjson as json
+import json
 import math
 import copy
 from common import keyify

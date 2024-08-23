@@ -5,7 +5,7 @@
 
 import string
 import sys
-import orjson as json
+import json
 import gzip
 import copy
 import math
@@ -19,7 +19,6 @@ from TA import *
 file = open('keylookup.json', 'rb')
 keyLookup = json.loads(file.read())
 file.close()
-
 
 def getTeamsFromLog(log,mrayAllowed):
 	teams={}
@@ -836,8 +835,7 @@ def main(argv):
 			if count % 10000 == 0:
 				outname = "Raw/"+tier#+".txt"
 				outfile=gzip.open(outname,'ab')
-				output = json.dumps(writeme).decode('utf-8') +'\n'
-				outfile.write(output.encode())
+				outfile.write(json.dumps(writeme) +'\n')
 				outfile.close()
 
 				#write to moveset file
@@ -855,8 +853,7 @@ def main(argv):
 	if writeme:
 		outname = "Raw/"+tier#+".txt"
 		outfile=gzip.open(outname,'ab')
-		output = json.dumps(writeme).decode('utf-8')+'\n'
-		outfile.write(output.encode())
+		outfile.write(json.dumps(writeme)+'\n')
 		outfile.close()
 
 		#write to moveset file
@@ -873,7 +870,7 @@ def main(argv):
 		for player in ratings.keys():
 			Glicko.newRatingPeriod(ratings[player])
 		ratingfile=open(argv[4],'w+')
-		ratingfile.write(json.dumps(ratings).decode('utf-8'))
+		ratingfile.write(json.dumps(ratings))
 		ratingfile.close()
 
 if __name__ == "__main__":

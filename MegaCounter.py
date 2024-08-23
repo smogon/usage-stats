@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys
-import orjson as json
+import json
 from TA import megas
 from common import keyify
 

@@ -1,6 +1,6 @@
 import string
 import sys
-import orjson as json
+import json
 import pickle
 from common import keyify,readTable,getBattleFormatsData
 reload(sys)

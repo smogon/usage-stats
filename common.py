@@ -4,7 +4,7 @@ import string
 import math
 import js2py
 import urllib
-import orjson as json
+import json
 
 def keyify(s):
 	sout = ''

@@ -6,7 +6,7 @@ import string
 import sys
 import math
 import pickle
-import orjson as json
+import json
 import gzip
 import os
 import math
@@ -332,5 +332,5 @@ d = os.path.dirname(filename)
 if not os.path.exists(d):
 	os.makedirs(d)
 file=open(filename,'w')
-file.write(json.dumps(chaos, option=json.OPT_NON_STR_KEYS).decode('utf-8'))
+file.write(json.dumps(chaos))
 file.close()	

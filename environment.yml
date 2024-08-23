@@ -2,6 +2,5 @@ name: sus-env3
 dependencies:
 - ipython
 - python=3.11
-- orjson
 - pip
 - js2py

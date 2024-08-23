@@ -3,7 +3,7 @@
 
 import sys
 import gzip
-import orjson as json
+import json
 import math
 import pickle
 

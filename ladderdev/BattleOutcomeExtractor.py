@@ -4,7 +4,7 @@
 #should be much more efficient, as TA.py and the files it requires need only be loaded once per run.
 
 import sys
-import orjson as json
+import json
 import os
 
 def LogReader(filename):

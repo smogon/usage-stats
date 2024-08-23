@@ -25,7 +25,7 @@ import sys
 import math
 import pickle
 import os
-import orjson as json
+import json
 import gzip
 
 from common import *

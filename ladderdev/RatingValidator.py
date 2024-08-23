@@ -3,7 +3,7 @@
 
 import gzip
 import sys
-import orjson as json
+import json
 
 from common import *
 
