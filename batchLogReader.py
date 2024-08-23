@@ -97,6 +97,13 @@ def getTeamsFromLog(log,mrayAllowed):
 			else:
 				level = 100
 
+			if 'teraType' in log[team][i].keys():
+				teraType = keyify(log[team][i]['teraType'])
+				if teraType == '':
+					teraType = 'nothing'
+			else:
+				teraType = 'nothing'
+
 			if species == 'rayquaza' and 'dragonascent' in moves and mrayAllowed:
 				species='rayquazamega'
 				ability='deltastream'
@@ -143,6 +150,7 @@ def getTeamsFromLog(log,mrayAllowed):
 				'item': item,
 				'evs': {},
 				'happiness': happiness,
+				'teraType': teraType,
 				'moves': [],
 				'ability': ability,
 				'level': level,
@@ -280,6 +288,7 @@ def LogReader(filename,tier,movesets,ratings):
 				'level':poke['level'],
 				'ability':poke['ability'],
 				'item':poke['item'],
+				'teraType':poke['teraType'],
 				'nature':poke['nature'],
 				'ivs':poke['ivs'],
 				'evs':poke['evs'],
