@@ -351,7 +351,12 @@ if metagamefile:
 		nbins = len(histogram)
 
 		for start in range(len(stallCounter)):
-			if stallCounter[start][0] >= histogram[0][0]-binSize/2:
+			# In Python 2, you could compare a list to a number, and the
+			# list would always be greater than or equal to the number.
+			# In other words, the commented statement (which would fail in
+			# Python 3) would always return True.
+			# if stallCounter[start] >= histogram[0][0]-binSize/2:
+			if True:
 				break
 
 		j=0
