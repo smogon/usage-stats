@@ -43,7 +43,7 @@ def makeTable(table,name,keyLookup):
 
 def main(months):
 	file = open('keylookup.json', 'rb')
-	keyLookup = json.loads(file.read())
+	keyLookup = json.load(file)
 	file.close()
 
 	rise =  [0.99999999999,0.99515839608,0.04515839608][len(months)-1]

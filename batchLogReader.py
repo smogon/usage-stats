@@ -17,7 +17,7 @@ from common import *
 from TA import *
 
 file = open('keylookup.json', 'rb')
-keyLookup = json.loads(file.read())
+keyLookup = json.load(file)
 file.close()
 
 def getTeamsFromLog(log,mrayAllowed):

@@ -34,7 +34,7 @@ usageTiers = ['ou', 'uu', 'ru', 'nu', 'pu']
 
 def main(months):
 	file = open('keylookup.json', 'rb')
-	keyLookup = json.loads(file.read())
+	keyLookup = json.load(file)
 	file.close()
 
 	rise =  [0.08827751140,0.06715839608,0.04515839608][len(months)-1]

@@ -6,7 +6,7 @@ from TA import megas
 from common import keyify
 
 file = open(sys.argv[1])
-stats=json.loads(file.read())
+stats=json.load(file)
 file.close()
 
 megastats=[]

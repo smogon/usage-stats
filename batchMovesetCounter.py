@@ -276,7 +276,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 	return stuff
 
 file = open('keylookup.json', 'rb')
-keyLookup = json.loads(file.read())
+keyLookup = json.load(file)
 file.close()
 keyLookup['nothing']='Nothing'
 keyLookup['']='Nothing'
