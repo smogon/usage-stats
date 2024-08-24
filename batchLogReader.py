@@ -274,6 +274,7 @@ def LogReader(filename,tier,movesets,ratings):
 			#msfile=open(outname,'ab')
 			if keyify(poke['species']) == 'meloettapirouette':
 				print(filename)
+			# This sequence removes Unicode characters from trainer names.
 			writeme={'trainer':trainer.encode('ascii', 'ignore').decode('utf-8'),
 				'level':poke['level'],
 				'ability':poke['ability'],
