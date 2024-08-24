@@ -243,12 +243,12 @@ for i in pokedict:
 #write teammates and encounter matrix to file
 filename="Raw/moveset/"+tier+"/teammate"+specs+".pickle"
 teammatefile=open(filename,'wb')
-pickle.dump(teammateMatrix, teammate_file)
+pickle.dump(teammateMatrix, teammatefile)
 teammatefile.close()
 filename="Raw/moveset/"+tier+"/encounterMatrix"+specs+".pickle"
-encounter_file = open(filename, 'wb')
-pickle.dump(encounterMatrix, encounter_file)
-encounter_file.close()
+encounterfile = open(filename, 'wb')
+pickle.dump(encounterMatrix, encounterfile)
+encounterfile.close()
 
 #sort by weighted usage
 if tier in ['challengecup1v1','1v1']:
