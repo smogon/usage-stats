@@ -48,8 +48,8 @@ def newRatingPeriod(rating):
 
 	if rating['d2'] == 0.0:
 		if rating['A'] != 0:
-			print 'WTF?'
-			print rating['A'],rating['d2']
+			print('WTF?')
+			print(rating['A'],rating['d2'])
 		rating['RD']=math.sqrt(pow(rating['RD'],2)+c*c)
 	else:
 		d2=pow(q*q*rating['d2'],-1.0)
@@ -64,7 +64,7 @@ def newRatingPeriod(rating):
 	rating['A']=0
 	rating['d2']=0
 
-	#print rating['RD']
+	#print(rating['RD'])
 	return rating
 
 def provisional(rating):

@@ -51,8 +51,8 @@ def newRatingPeriod(rating):
 
 	if rating['v'] == 0.0:
 		if rating['Delta'] != 0:
-			print 'WTF?'
-			print rating['v'],rating['Delta']
+			print('WTF?')
+			print(rating['v'],rating['Delta'])
 		p=math.sqrt(pow(phi(rating['RD']),2)+pow(rating['sigma'],2))
 		rating['RD']=173.7178*p
 	else:

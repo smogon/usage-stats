@@ -27,7 +27,7 @@ for line in raw:
 		continue
 		#probWin = 1.0-probWin
 		#outcome = 1.0-outcome
-	for i in xrange(len(bins)):
+	for i in range(len(bins)):
 		if probWin < bins[i][0]+binSize/2:
 			bins[i][1]+=1
 			bins[i][2]+=probWin
@@ -36,6 +36,6 @@ for line in raw:
 
 for bin in bins:
 	if bin[1] > 0:
-		print bin[0],bin[1],bin[2],bin[3],bin[2]/bin[1],pow(bin[2],0.5)/bin[1],bin[3]/bin[1]
+		print(bin[0],bin[1],bin[2],bin[3],bin[2]/bin[1],pow(bin[2],0.5)/bin[1],bin[3]/bin[1])
 	else:
-		print bin[0],bin[1],bin[2],bin[3],'--','--','--'
+		print(bin[0],bin[1],bin[2],bin[3],'--','--','--')
