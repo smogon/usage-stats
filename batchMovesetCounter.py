@@ -12,7 +12,7 @@ import gzip
 import os
 import math
 
-from common import keyify,weighting,readTable,aliases,victoryChance
+from common import keyify,weighting,readTable,reverseAliases,victoryChance
 from TA import nmod,statFormula,baseStats
 
 def movesetCounter(filename, cutoff, teamtype, usage):
@@ -28,10 +28,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 			raw[i]=raw[i]+']'
 
 	species = keyLookup[filename[string.rfind(filename,'/')+1:]]
-	for alias in aliases:
-		if species in aliases[alias]:
-			species = alias
-			break
+	species = reverseAliases.get(species, species)
 
 	bias = []
 	stalliness = []
