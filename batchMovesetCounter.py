@@ -29,6 +29,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 
 	species = keyLookup[filename[string.rfind(filename,'/')+1:]]
 	species = reverseAliases.get(species, species)
+	speciesKey = keyify(species)
 
 	bias = []
 	stalliness = []
@@ -99,10 +100,10 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 					n=-1
 				else:
 					n=nmod[moveset['nature']][{'atk': 0, 'def': 1, 'spa': 2, 'spd': 3, 'spe': 4}[stat]]
-				x = statFormula(baseStats[keyify(species)][stat],moveset['level'],n,moveset['ivs'][stat],ev)
+				x = statFormula(baseStats[speciesKey][stat],moveset['level'],n,moveset['ivs'][stat],ev)
 
 				while ev > 0:
-					if x != statFormula(baseStats[keyify(species)][stat],moveset['level'],n,moveset['ivs'][stat],ev-1):
+					if x != statFormula(baseStats[speciesKey][stat],moveset['level'],n,moveset['ivs'][stat],ev-1):
 						break
 					ev = ev-1
 			
