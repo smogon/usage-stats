@@ -129,21 +129,15 @@ def getTeamsFromLog(log,mrayAllowed):
 			if species[0] in string.lowercase or species[1] in string.uppercase:
 				species = species.title()
 
-			for s in aliases: #combine appearance-only variations and weird PS quirks
-				if species in aliases[s]:
-					species = s
-					break
+			species = reverseAliases.get(species, species) #combine appearance-only variations and weird PS quirks
 			try:	
 				species=keyLookup[keyify(species)]
 			except:
 				sys.stderr.write(species+' not in keyLookup.\n')
 				return False
 
-			for s in aliases: #this 2nd one is needed to deal with Nidoran
-				if species in aliases[s]:
-					species = s
-					break
-			
+			species = reverseAliases.get(species, species) #this 2nd one is needed to deal with Nidoran
+
 			teams[team].append({
 				'species': species,
 				'nature': nature,
@@ -373,10 +367,7 @@ def LogReader(filename,tier,movesets,ratings):
 				# remove gender
 				species = species.split(',')[0]
 
-				for s in aliases: #combine appearance-only variations and weird PS quirks
-					if species in aliases[s]:
-						species = s
-						break
+				species = reverseAliases.get(species, species) #combine appearance-only variations and weird PS quirks
 
 				try:
 					active[0]=ts.index([ts[0][0],species])
@@ -423,10 +414,7 @@ def LogReader(filename,tier,movesets,ratings):
 				# remove gender
 				species = species.split(',')[0]
 
-				for s in aliases: #combine appearance-only variations and weird PS quirks
-					if species in aliases[s]:
-						species = s
-						break	
+				species = reverseAliases.get(species, species) #combine appearance-only variations and weird PS quirks
 
 				try:
 					active[1]=ts.index([ts[11][0],species])
@@ -603,10 +591,7 @@ def LogReader(filename,tier,movesets,ratings):
 				# remove gender
 				species = species.split(',')[0]
 
-				for s in aliases: #combine appearance-only variations and weird PS quirks
-					if species in aliases[s]:
-						species = s
-						break
+				species = reverseAliases.get(species, species) #combine appearance-only variations and weird PS quirks
 
 				if [ts[11*(int(line[p])-1)][0],species] not in ts:
 					if species == 'Shaymin' and [ts[11*(int(line[p])-1)][0],'Shaymin-Sky'] in ts:
@@ -710,10 +695,7 @@ def LogReader(filename,tier,movesets,ratings):
 				species = species.split(',')[0]
 				while ',' in species:
 					species = species[0:string.rfind(species,',')]
-				for s in aliases: #combine appearance-only variations and weird PS quirks
-					if species in aliases[s]:
-						species = s
-						break
+				species = reverseAliases.get(species, species) #combine appearance-only variations and weird PS quirks
 
 				if [ts[11*(int(line[p])-1)][0],species] not in ts:
 					if species == 'Shaymin' and [ts[11*(int(line[p])-1)][0],'Shaymin-Sky'] in ts:

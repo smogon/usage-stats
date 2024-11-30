@@ -5,15 +5,11 @@ import math
 import js2py
 import urllib2
 import ujson as json
+import re
 
+nonKeyRegex = re.compile('[^a-z0-9]+')
 def keyify(s):
-	sout = ''
-	for c in s:
-		if c in string.uppercase:
-			sout = sout + c.lower()
-		elif c in string.lowercase + '1234567890':
-			sout = sout + c
-	return sout
+	return nonKeyRegex.sub('', s.lower())
 
 #our weighting function
 def weighting(rating,deviation,cutoff):
@@ -198,6 +194,8 @@ aliases={
 	'Ogerpon-Wellspring': ['Ogerpon-Wellspring-Tera', 'Ogerponwellspringtera'],
 	'Terapagos': ['Terapagos-Terastal', 'Terapagosterastal', 'Terapagos-Stellar', 'Terapagosstellar']
 }
+
+reverseAliases = {alias: species for species, aliasList in aliases.items() for alias in aliasList}
 
 nonSinglesFormats = [
 	'battlespotdoubles',
