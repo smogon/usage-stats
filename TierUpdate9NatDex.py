@@ -1,7 +1,7 @@
 import string
 import sys
 import json
-import cPickle as pickle
+import pickle
 from common import keyify,readTable,getBattleFormatsData
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -16,18 +16,18 @@ def getUsage(filename,col,weight,usage):
 
 def makeTable(table,name,keyLookup):
 
-	print "[HIDE="+name+"][CODE]"
-	print "Combined usage for "+name
-	print " + ---- + ------------------ + ------- + "
-	print " | Rank | Pokemon            | Percent | "
-	print " + ---- + ------------------ + ------- + "
-	print ' | %-4d | %-18s | %6.3f%% |' % (1,keyLookup[table[0][0]],table[0][1]*100)
+	print("[HIDE="+name+"][CODE]")
+	print("Combined usage for "+name)
+	print(" + ---- + ------------------ + ------- + ")
+	print(" | Rank | Pokemon            | Percent | ")
+	print(" + ---- + ------------------ + ------- + ")
+	print(' | %-4d | %-18s | %6.3f%% |' % (1,keyLookup[table[0][0]],table[0][1]*100))
 	for i in range(1,len(table)):
 		if table[i][1] < 0.001:
 			break
-		print ' | %-4d | %-18s | %6.3f%% |' % (i+1,keyLookup[table[i][0]],100.0*table[i][1])
-	print " + ---- + ------------------ + ------- + "
-	print "[/CODE][/HIDE]"
+		print(' | %-4d | %-18s | %6.3f%% |' % (i+1,keyLookup[table[i][0]],100.0*table[i][1]))
+	print(" + ---- + ------------------ + ------- + ")
+	print("[/CODE][/HIDE]")
 
 tiers = ['Uber','OU','UUBL','UU','RUBL','RU','NUBL','NU','PUBL','PU','ZUBL','ZU', 'New']
 usageTiers = ['nationaldex', 'nationaldexuu']
@@ -79,8 +79,8 @@ def main(months):
 
 	usage = {} #track usage across all relevant tiers [OU,UU,RU,NU]
 
-	for i in xrange(len(months)):
-		for j in xrange(len(usageTiers)):		
+	for i in range(len(months)):
+		for j in range(len(usageTiers)):		
 			n = {}
 			u = {}
 
@@ -181,7 +181,7 @@ def main(months):
 		if poke not in newTiers.keys():
 			newTiers[poke] = 'RU'
 
-	print ""
+	print("")
 	for poke in curTiers:
 		if newTiers[poke] == 'RU' and poke in NFE:
 			continue
@@ -192,7 +192,7 @@ def main(months):
 				if tiers.index(newTiers[base]) < tiers.index(newTiers[poke]): #if the base is in a higher tier
 					newTiers[poke] = newTiers[base]
 					continue
-			print species+" moved from "+curTiers[poke]+" to "+newTiers[poke]
+			print(species+" moved from "+curTiers[poke]+" to "+newTiers[poke])
 
 if __name__ == "__main__":
     main(sys.argv[1:])

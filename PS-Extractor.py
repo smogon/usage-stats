@@ -4,7 +4,7 @@
 used on Pokemon Showdown and pull out the data that's needed for the scripts."""
 
 import json
-import cPickle as pickle
+import pickle
 from onix import contexts
 
 ctx = contexts.get_standard_context(force_refresh=True)
@@ -30,6 +30,6 @@ for k, v in ctx.pokedex.items():
 for k, v in ctx.natures.items():
     keyLookup[k] = v['name']
 
-json.dump(baseStats, open('baseStats.json', 'w+'))
-json.dump(types, open('types.json', 'w+'))
-pickle.dump(keyLookup, open('keylookup.pickle', 'w+'))
+json.dump(baseStats, open('baseStats.json', 'w'))
+json.dump(types, open('types.json', 'w'))
+pickle.dump(keyLookup, open('keylookup.pickle', 'wb'))

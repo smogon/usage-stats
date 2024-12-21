@@ -3,13 +3,13 @@
 import string
 import math
 import js2py
-import urllib2
-import ujson as json
+import urllib
+import json
 import re
 
 nonKeyRegex = re.compile('[^a-z0-9]+')
 def keyify(s):
-	return nonKeyRegex.sub('', s.lower())
+  return nonKeyRegex.sub('', s.lower())
 
 #our weighting function
 def weighting(rating,deviation,cutoff):
@@ -57,16 +57,16 @@ def readTable(filename):
 
 
 def getFormats():
-	js=urllib2.urlopen("https://raw.githubusercontent.com/Zarel/Pokemon-Showdown/master/config/formats.js").read()
-	print 'Updating tiers'
+	js=urllib.request.urlopen("https://raw.githubusercontent.com/Zarel/Pokemon-Showdown/master/config/formats.js").read()
+	print('Updating tiers')
 	return json.loads(js2py.eval_js('exports={},'+js+'JSON.stringify(exports.Formats)'))
 
 def getBattleFormatsData():
-	#js=urllib2.urlopen("https://play.pokemonshowdown.com/data/formats-data.js").read()
+	#js=urllib.request.urlopen("https://play.pokemonshowdown.com/data/formats-data.js").read()
 	file = open('formats-data.js')
 	js = file.read()
 	file.close()
-	#print 'Updating tiers'
+	#print('Updating tiers')
 	return json.loads(js2py.eval_js('exports={},'+js+'JSON.stringify(exports.BattleFormatsData)'))
 
 aliases={

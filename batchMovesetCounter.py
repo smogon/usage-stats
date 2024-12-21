@@ -5,8 +5,7 @@
 import string
 import sys
 import math
-import cPickle as pickle
-#import ujson as json
+import pickle
 import json
 import gzip
 import os
@@ -17,7 +16,7 @@ from TA import nmod,statFormula,baseStats
 
 def movesetCounter(filename, cutoff, teamtype, usage):
 	file = gzip.open(filename,'rb')
-	raw = file.read()
+	raw = file.read().decode('utf-8')
 	file.close()
 
 	raw=raw.split('][')
@@ -27,9 +26,9 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		if (i<len(raw)-1):
 			raw[i]=raw[i]+']'
 
-	species = keyLookup[filename[string.rfind(filename,'/')+1:]]
-	species = reverseAliases.get(species, species)
-	speciesKey = keyify(species)
+  species = keyLookup[filename[filename.rfind('/')+1:]]
+  species = reverseAliases.get(species, species)
+  speciesKey = keyify(species)
 
 	bias = []
 	stalliness = []
@@ -182,28 +181,28 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		'Teammates': teammates,
 		'Checks and Counters': cc}
 
-	#print tables
+	#print(tables)
 	tablewidth = 40
 
 	separator = ' +'
 	for i in range(tablewidth):
 		separator = separator + '-'
 	separator = separator + '+ '
-	print separator
+	print(separator)
 
 	line = ' | '+species
 	for i in range(len(species),tablewidth-1):
 		line = line + ' '
 	line = line + '| '
-	print line
+	print(line)
 
-	print separator
+	print(separator)
 
 	line = ' | Raw count: %d'%(rawCount)
 	while len(line) < tablewidth+2:
 		line = line + ' '
 	line = line + '| '
-	print line
+	print(line)
 	line = ' | Avg. weight: '
 	if len(weights)>0:
 		line = line+str(sum(weights)/len(weights))
@@ -212,14 +211,14 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 	while len(line) < tablewidth+2:
 		line = line + ' '
 	line = line + '| '
-	print line
+	print(line)
 	line = ' | Viability Ceiling: %d'%(maxGXE[1])
 	while len(line) < tablewidth+2:
 		line = line + ' '
 	line = line + '| '
-	print line
+	print(line)
 
-	print separator
+	print(separator)
 
 	for x in ['Abilities','Items','Spreads','Moves','Tera Types','Teammates','Checks and Counters']:
 		table = []
@@ -227,7 +226,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		while len(line) < tablewidth+2:
 			line = line + ' '
 		line = line + '| '
-		print line
+		print(line)
 
 		for i in stuff[x]:
 			if (x in ['Spreads', 'Teammates','Checks and Counters']):
@@ -236,19 +235,19 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 				table.append([i.title(), stuff[x][i]])
 			else:
 				table.append([keyLookup[i],stuff[x][i]])
-		if x is 'Checks and Counters':
+		if x == 'Checks and Counters':
 			table=sorted(table, key=lambda table:-(table[1][1]-4.0*table[1][2]))
 		else:
 			table=sorted(table, key=lambda table:-table[1])
 		total = 0.0
 		for i in range(len(table)): 
-			if (total > .95 and x is not 'Abilities') or (x is 'Abilities' and i>5) or (x is 'Spreads' and i>5) or (x is 'Teammates' and i>10) or (x is 'Checks and Counters' and i>11):
-				if x is 'Moves':
+			if (total > .95 and x != 'Abilities') or (x == 'Abilities' and i>5) or (x == 'Spreads' and i>5) or (x == 'Teammates' and i>10) or (x == 'Checks and Counters' and i>11):
+				if x == 'Moves':
 					line = ' | %s %6.3f%%' % ('Other',400.0*(1.0-total))
 				elif x not in ['Teammates','Checks and Counters']:
 					line = ' | %s %6.3f%%' % ('Other',100.0*(1.0-total))
 			else:
-				if x is 'Checks and Counters':
+				if x == 'Checks and Counters':
 					matchup = encounterMatrix[species][table[i][0]]
 					n=sum(matchup[0:6])
 					score=float(table[i][1][1])-4.0*table[i][1][2]
@@ -263,7 +262,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 						line = line+' '
 					if float(100.0*matchup[3])/n < 10.0:
 						line = line+' '
-				elif x is 'Teammates':
+				elif x == 'Teammates':
 					line = ' | %s %6.3f%%' % (table[i][0],100.0*table[i][1]/count)
 					if table[i][1] < 0.005*count:
 						break
@@ -272,16 +271,16 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 			while len(line) < tablewidth+2:
 				line = line + ' '
 			line = line + '| '
-			print line.encode('utf8')
-			if (total > .95 and x is not 'Abilities') or (x is 'Abilities' and i>5) or (x is 'Spreads' and i>5) or (x is 'Teammates' and i>9) or (x is 'Checks and Counters' and i>10):
+			print(line)
+			if (total > .95 and x != 'Abilities') or (x == 'Abilities' and i>5) or (x == 'Spreads' and i>5) or (x == 'Teammates' and i>9) or (x == 'Checks and Counters' and i>10):
 				break
-			if x is 'Moves':
+			if x == 'Moves':
 				total = total + float(table[i][1])/count/4.0
-			elif x is 'Teammates':
+			elif x == 'Teammates':
 				total = total + float(table[i][1])/count/5.0
-			elif x is not 'Checks and Counters':
+			elif x != 'Checks and Counters':
 				total = total + float(table[i][1])/count
-		print separator
+		print(separator)
 	return stuff
 
 file = open('keylookup.json', 'rb')
@@ -304,11 +303,11 @@ if teamtype:
 	specs += teamtype+'-'
 specs += '{:.0f}'.format(cutoff)
 
-file = open('Raw/moveset/'+str(sys.argv[1])+'/teammate'+specs+'.pickle')
+file = open('Raw/moveset/'+str(sys.argv[1])+'/teammate'+specs+'.pickle', 'rb')
 teammateMatrix = pickle.load(file)
 file.close()
 
-file = open('Raw/moveset/'+str(sys.argv[1])+'/encounterMatrix'+specs+'.pickle')
+file = open('Raw/moveset/'+str(sys.argv[1])+'/encounterMatrix'+specs+'.pickle', 'rb')
 encounterMatrix = pickle.load(file)
 file.close()
 

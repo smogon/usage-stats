@@ -1,7 +1,6 @@
-name: sus-env2
+name: sus-env3
 dependencies:
 - ipython
-- python=2
-- ujson
-- pip:
-  - js2py
+- python=3.12
+- pip
+- js2py

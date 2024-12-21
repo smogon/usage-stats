@@ -22,13 +22,13 @@ if (nold != nnew):
 		printme = " Up %5.2f%%" % (100*float(nnew-nold)/nold)
 	else:
 		printme = " Down %5.2f%%" % (100*float(nold-nnew)/nold)
-	print printme
-print " + ------------------ + --------- + "
-print " | Pokemon            | Diff (%)  | "
-print " + ------------------ + --------- + "
+	print(printme)
+print(" + ------------------ + --------- + ")
+print(" | Pokemon            | Diff (%)  | ")
+print(" + ------------------ + --------- + ")
 
 for i in range(0,len(pokes)):
 	if abs(pokes[i][1]) > 0.001:
-		print ' | %-18s | %+8.5f%% | ' % (pokes[i][0],pokes[i][1]*100.0)
+		print(' | %-18s | %+8.5f%% | ' % (pokes[i][0],pokes[i][1]*100.0))
 
-print " + ------------------ + --------- + "
+print(" + ------------------ + --------- + ")

@@ -23,9 +23,8 @@
 import string
 import sys
 import math
-import cPickle as pickle
+import pickle
 import os
-#import ujson as json
 import json
 import gzip
 
@@ -66,10 +65,6 @@ if tier not in ["1v1", "challengecup1vs1"]:
 	metagamefile=open(filename,'w')
 else:
 	metagamefile=False
-filename="Raw/moveset/"+tier+"/teammate"+specs+".pickle"
-teammatefile=open(filename,'w')
-filename="Raw/moveset/"+tier+"/encounterMatrix"+specs+".pickle"
-encounterfile=open(filename,'w')
 
 
 battleCount = 0
@@ -94,7 +89,7 @@ if tier.endswith('suspecttest'):
 	t=t[:-11]
 
 for line in file:
-	#print line
+	#print(line)
 	battles = json.loads(line)
 
 	for battle in battles:
@@ -190,8 +185,8 @@ for line in file:
 			if 'empty' in leads:
 				if len(battle['matchups']) == 0: #1v1 (or similiar) battle forfeited before started
 					continue
-				print "Something went wrong."
-				print battle
+				print("Something went wrong.")
+				print(battle)
 
 			for i in range(2):
 				if ['p1','p2'][i] not in weight:
@@ -240,9 +235,13 @@ for i in pokedict:
 
 
 #write teammates and encounter matrix to file
-pickle.dump(teammateMatrix,teammatefile)
+filename="Raw/moveset/"+tier+"/teammate"+specs+".pickle"
+teammatefile=open(filename,'wb')
+pickle.dump(teammateMatrix, teammatefile)
 teammatefile.close()
-pickle.dump(encounterMatrix,encounterfile)
+filename="Raw/moveset/"+tier+"/encounterMatrix"+specs+".pickle"
+encounterfile = open(filename, 'wb')
+pickle.dump(encounterMatrix, encounterfile)
 encounterfile.close()
 
 #sort by weighted usage
@@ -316,8 +315,8 @@ if metagamefile:
 
 	if stallCounter:
 		#figure out a good bin range by looking at .1% and 99.9% points
-		low = stallCounter[len(stallCounter)/1000][0]
-		high = stallCounter[len(stallCounter)-len(stallCounter)/1000-1][0]
+		low = stallCounter[len(stallCounter)//1000][0]
+		high = stallCounter[len(stallCounter)-len(stallCounter)//1000-1][0]
 		
 
 		nbins = 13 #this is actually only a rough idea--I think it might be the minimum?
@@ -347,7 +346,12 @@ if metagamefile:
 		nbins = len(histogram)
 
 		for start in range(len(stallCounter)):
-			if stallCounter[start] >= histogram[0][0]-binSize/2:
+			# In Python 2, you could compare a list to a number, and the
+			# list would always be greater than or equal to the number.
+			# In other words, the commented statement (which would fail in
+			# Python 3) would always return True.
+			# if stallCounter[start] >= histogram[0][0]-binSize/2:
+			if True:
 				break
 
 		j=0
@@ -373,7 +377,7 @@ if metagamefile:
 				x=x+score[0]*score[1]
 				y=y+score[1]	
 
-			#print histogram
+			#print(histogram)
 			metagamefile.write(' Stalliness (mean: %6.3f)\n'%(x/y))
 			for i in range(len(histogram)):
 				if histogram[i][0]%(2.0*binSize) < binSize/2:
