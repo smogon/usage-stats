@@ -26,9 +26,9 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		if (i<len(raw)-1):
 			raw[i]=raw[i]+']'
 
-  species = keyLookup[filename[filename.rfind('/')+1:]]
-  species = reverseAliases.get(species, species)
-  speciesKey = keyify(species)
+	species = keyLookup[filename[filename.rfind('/')+1:]]
+	species = reverseAliases.get(species, species)
+	speciesKey = keyify(species)
 
 	bias = []
 	stalliness = []

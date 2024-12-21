@@ -9,7 +9,7 @@ import re
 
 nonKeyRegex = re.compile('[^a-z0-9]+')
 def keyify(s):
-  return nonKeyRegex.sub('', s.lower())
+	return nonKeyRegex.sub('', s.lower())
 
 #our weighting function
 def weighting(rating,deviation,cutoff):
