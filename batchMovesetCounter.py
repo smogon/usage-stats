@@ -11,7 +11,7 @@ import gzip
 import os
 import math
 
-from common import keyify,weighting,readTable,aliases,victoryChance
+from common import keyify,weighting,readTable,reverseAliases,victoryChance
 from TA import nmod,statFormula,baseStats
 
 def movesetCounter(filename, cutoff, teamtype, usage):
@@ -26,11 +26,9 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		if (i<len(raw)-1):
 			raw[i]=raw[i]+']'
 
-	species = keyLookup[filename[filename.rfind('/')+1:]]
-	for alias in aliases:
-		if species in aliases[alias]:
-			species = alias
-			break
+  species = keyLookup[filename[filename.rfind('/')+1:]]
+  species = reverseAliases.get(species, species)
+  speciesKey = keyify(species)
 
 	bias = []
 	stalliness = []
@@ -39,6 +37,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 	happinesses = {}
 	spreads = {}
 	moves = {}
+	teraTypes = {}
 	movesets = []
 	weights = []
 	rawCount = 0
@@ -100,10 +99,10 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 					n=-1
 				else:
 					n=nmod[moveset['nature']][{'atk': 0, 'def': 1, 'spa': 2, 'spd': 3, 'spe': 4}[stat]]
-				x = statFormula(baseStats[keyify(species)][stat],moveset['level'],n,moveset['ivs'][stat],ev)
+				x = statFormula(baseStats[speciesKey][stat],moveset['level'],n,moveset['ivs'][stat],ev)
 
 				while ev > 0:
-					if x != statFormula(baseStats[keyify(species)][stat],moveset['level'],n,moveset['ivs'][stat],ev-1):
+					if x != statFormula(baseStats[speciesKey][stat],moveset['level'],n,moveset['ivs'][stat],ev-1):
 						break
 					ev = ev-1
 			
@@ -130,6 +129,12 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 			if happiness not in happinesses.keys():
 				happinesses[happiness]=0.0
 			happinesses[happiness]+=weight
+
+			if moveset['teraType'] is None:
+				moveset['teraType'] = 'nothing'
+			if moveset['teraType'] not in teraTypes:
+				teraTypes[moveset['teraType']] = 0.0
+			teraTypes[moveset['teraType']] = teraTypes[moveset['teraType']] + weight
 
 	count = sum(abilities.values())
 	gxes=list(reversed(sorted(gxes.values())))
@@ -171,6 +176,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		'Items': items,
 		'Spreads': spreads,
 		'Moves': moves,
+		'Tera Types': teraTypes,
 		'Happiness' : happinesses,
 		'Teammates': teammates,
 		'Checks and Counters': cc}
@@ -214,7 +220,7 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 
 	print(separator)
 
-	for x in ['Abilities','Items','Spreads','Moves','Teammates','Checks and Counters']:
+	for x in ['Abilities','Items','Spreads','Moves','Tera Types','Teammates','Checks and Counters']:
 		table = []
 		line = ' | '+x
 		while len(line) < tablewidth+2:
@@ -225,6 +231,8 @@ def movesetCounter(filename, cutoff, teamtype, usage):
 		for i in stuff[x]:
 			if (x in ['Spreads', 'Teammates','Checks and Counters']):
 				table.append([i,stuff[x][i]])
+			elif (x == 'Tera Types'):
+				table.append([i.title(), stuff[x][i]])
 			else:
 				table.append([keyLookup[i],stuff[x][i]])
 		if x == 'Checks and Counters':
