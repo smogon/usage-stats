@@ -181,6 +181,26 @@ def main(months):
 		if poke not in newTiers.keys():
 			newTiers[poke] = 'RU'
 
+	for poke in newTiers.keys():
+		if newTiers[poke] == 'UU' and poke in \
+			['blaziken', 'charizardmegax', 'cinderace', 'dondozo', 'gyarados',
+			 'gyaradosmega', 'hoopaunbound', 'ironhands', 'kommoo', 'latios',
+			 'latiosmega', 'manaphy', 'medichammega', 'meowscarada',
+			 'ogerponcornerstone', 'pinsirmega', 'tornadustherian', 'weavile',
+			 'xurkitree', 'zapdosgalar', 'annihilape', 'baxcalibur', 'ceruledge',
+			 'espathra', 'garganacl', 'kartana', 'kyurem', 'mawilemega', 'zamazenta']:
+			newTiers[poke] = 'UUBL'
+		elif newTiers[poke] == 'RU' and poke in \
+			['aerodactylmega', 'alakazam', 'altariamega', 'bisharp',
+			 'blacephalon', 'buzzwole', 'dondozo', 'enamorus', 'gallademega',
+			 'gardevoirmega', 'gengar', 'gyarados', 'hawlucha', 'heracrossmega',
+			 'ironhands', 'ironleaves', 'jirachi', 'keldeo', 'keldeoresolute',
+			 'kyurem', 'latiasmega', 'latios', 'latiosmega', 'lilliganthisui',
+			 'mamoswine', 'manaphy', 'mew', 'moltresgalar', 'pecharunt', 'porygonz',
+			 'quaquaval', 'salamence', 'sableyemega', 'terrakion', 'victini',
+			 'xurkitree', 'zapdosgalar', 'zoroarkhisui']:
+			newTiers[poke] = 'RUBL'
+
 	print("")
 	for poke in curTiers:
 		if newTiers[poke] == 'RU' and poke in NFE:
