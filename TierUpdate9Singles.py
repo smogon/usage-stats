@@ -246,7 +246,7 @@ def main(months):
 
 	#next do ZUBL
 	for poke in newTiers.keys():
-		if newTiers[poke] == 'ZU' and poke in ['']:
+		if curTiers[poke] == 'ZUBL' and poke not in newTiers.keys():
 			newTiers[poke] = 'ZUBL'
 
 	#the rest go in the lowest tier
@@ -263,7 +263,7 @@ def main(months):
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in ['drednaw','oricoriopompom']:
 			newTiers[poke] = 'PUBL'
-		if newTiers[poke] == 'ZU' and poke in ['']:
+		if newTiers[poke] == 'ZU' and poke in ['alcremie', 'articunogalar', 'bruxish', 'delphox', 'dudunsparce', 'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'tornadus', 'uxie']:
 			newTiers[poke] = 'ZUBL'
 
 	print("")
