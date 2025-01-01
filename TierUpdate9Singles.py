@@ -255,14 +255,16 @@ def main(months):
 			newTiers[poke] = tiers[-1]
 
 	for poke in newTiers.keys():
-		if newTiers[poke] == 'UU' and poke in ['espathra', 'baxcalibur', 'hydreigon']:
+		if newTiers[poke] == 'UU' and poke in ['espathra', 'baxcalibur','roaringmoon','ironhands','latias','blaziken','ceruledge','garganacl','ironboulder']:
 			newTiers[poke] = 'UUBL'
-		if newTiers[poke] == 'RU' and poke in ['haxorus','lycanrocdusk','drednaw','toxtricity','flamigo','hawlucha','polteageist','oricoriopompom']:
+		if newTiers[poke] == 'RU' and poke in ['drednaw','toxtricity','flamigo','hawlucha','polteageist','oricoriopompom','moltresgalar','mew','hydreigon','manaphy','ironjugulis','zarude','hoopaunbound','enamorustherian']:
 			newTiers[poke] = 'RUBL'
-		if newTiers[poke] == 'NU' and poke in ['florges','indeedee','oricoriopompom','venomoth','goodra','cetitan','oricoriosensu','barraskewda']:
+		if newTiers[poke] == 'NU' and poke in ['armarouge','gyarados','necrozma','regidrago','suicune','lilliganthisui','mew','lycanrocdusk']:
 			newTiers[poke] = 'NUBL'
-		if newTiers[poke] == 'PU' and poke in ['oricorio','oricoriopau','magneton','vivillon','sneaselhisui']:
+		if newTiers[poke] == 'PU' and poke in ['drednaw','oricoriopompom']:
 			newTiers[poke] = 'PUBL'
+		if newTiers[poke] == 'ZU' and poke in ['']:
+			newTiers[poke] = 'ZUBL'
 
 	print("")
 	for poke in curTiers:
