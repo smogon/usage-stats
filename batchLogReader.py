@@ -99,7 +99,7 @@ def getTeamsFromLog(log,mrayAllowed):
 
 			if 'teraType' in log[team][i].keys():
 				teraType = keyify(log[team][i]['teraType'])
-				if teraType == '':
+				if teraType == '' or item.endswith('iumz'):
 					teraType = 'nothing'
 			else:
 				teraType = 'nothing'
@@ -107,6 +107,7 @@ def getTeamsFromLog(log,mrayAllowed):
 			if species == 'rayquaza' and 'dragonascent' in moves and mrayAllowed:
 				species='rayquazamega'
 				ability='deltastream'
+				teraType = 'nothing'
 			elif species == 'greninja' and ability == 'battlebond':
 				species = 'greninjaash'
 			elif species == 'zacian' and item == 'rustedsword':
@@ -124,6 +125,7 @@ def getTeamsFromLog(log,mrayAllowed):
 						if species in ['kyogremega','groudonmega']:
 							species=species[:-4]+'primal'
 						ability=mega[2]
+						teraType = 'nothing'
 						break
 
 			if species[0] in string.lowercase or species[1] in string.uppercase:
