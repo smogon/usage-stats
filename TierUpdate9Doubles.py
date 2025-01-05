@@ -29,7 +29,7 @@ def makeTable(table,name,keyLookup):
 	print(" + ---- + ------------------ + ------- + ")
 	print("[/CODE][/HIDE]")
 
-tiers = ['DUber','DOU', 'DUU', 'DNU']
+tiers = ['DUber','DOU', 'DUUBL', 'DUU', 'DNU']
 usageTiers = ['doublesou', 'doublesuu']
 
 def main(months):
@@ -159,6 +159,10 @@ def main(months):
 				newTiers[poke] = 'DNU'
 			else:
 				newTiers[poke] = 'DUU'
+
+	for poke in newTiers.keys():
+		if newTiers[poke] == 'DUU' and poke in ['basculegion', 'roaringmoon']:
+			newTiers[poke] = 'DUUBL'
 
 	#the rest go in the lowest tier
 	for poke in curTiers.keys():
