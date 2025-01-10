@@ -2,8 +2,7 @@
 
 import string
 import math
-import js2py
-import urllib
+import urllib.request
 import json
 import re
 
@@ -55,19 +54,28 @@ def readTable(filename):
 	return usage,nBattles
 
 
+def getTextFromURL(url: str) -> str:
+	return \
+		urllib.request.urlopen(
+			# Don't love spoofing the user agent, but it's either that or installing requests
+			urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+		).read().decode()
+
+def convertJStoJSON(data: str) -> str:
+	return \
+		re.sub("(\\w+):", "\"\\1\":",
+			re.sub("exports.\\w+ = ", "", data)[:-1]
+		)
 
 def getFormats():
-	js=urllib.request.urlopen("https://raw.githubusercontent.com/Zarel/Pokemon-Showdown/master/config/formats.js").read()
-	print('Updating tiers')
-	return json.loads(js2py.eval_js('exports={},'+js+'JSON.stringify(exports.Formats)'))
+	print('Updating formats')
+	formats = getTextFromURL('https://play.pokemonshowdown.com/data/formats.js')
+	return json.loads(convertJStoJSON(formats))
 
 def getBattleFormatsData():
-	#js=urllib.request.urlopen("https://play.pokemonshowdown.com/data/formats-data.js").read()
-	file = open('formats-data.js')
-	js = file.read()
-	file.close()
-	#print('Updating tiers')
-	return json.loads(js2py.eval_js('exports={},'+js+'JSON.stringify(exports.BattleFormatsData)'))
+	print('Updating tiering information')
+	formatsData = getTextFromURL('https://play.pokemonshowdown.com/data/formats-data.js')
+	return json.loads(convertJStoJSON(formatsData))
 
 aliases={
 	'NidoranF': ['Nidoran-F'],
