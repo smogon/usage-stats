@@ -255,15 +255,35 @@ def main(months):
 			newTiers[poke] = tiers[-1]
 
 	for poke in newTiers.keys():
-		if newTiers[poke] == 'UU' and poke in ['espathra', 'baxcalibur','roaringmoon','ironhands','latias','blaziken','ceruledge','garganacl','ironboulder']:
+		if newTiers[poke] == 'UU' and poke in [
+			'baxcalibur', 'blaziken', 'ceruledge', 'espathra', 'garchomp',
+			'garganacl', 'hoopaunbound', 'ironboulder', 'ironhands', 'kommoo',
+			'latias', 'moltresgalar', 'okidogi', 'pelipper', 'ursaluna',
+		]:
 			newTiers[poke] = 'UUBL'
-		if newTiers[poke] == 'RU' and poke in ['drednaw','toxtricity','flamigo','hawlucha','polteageist','oricoriopompom','moltresgalar','mew','hydreigon','manaphy','ironjugulis','zarude','hoopaunbound','enamorustherian']:
+		if newTiers[poke] == 'RU' and poke in [
+			'blastoise', 'comfey', 'enamorustherian', 'hawlucha', 'haxorus',
+			'hoopaunbound', 'hydreigon', 'ironjugulis', 'ironleaves', 'manaphy',
+			'moltresgalar', 'polteageist', 'thundurus', 'thundurustherian',
+			'yanmega', 'zarude',
+		]:
 			newTiers[poke] = 'RUBL'
-		if newTiers[poke] == 'NU' and poke in ['armarouge','gyarados','necrozma','regidrago','suicune','lilliganthisui','mew','lycanrocdusk']:
+		if newTiers[poke] == 'NU' and poke in [
+			'armarouge', 'cloyster', 'cresselia', 'deoxysdefense', 'feraligatr',
+			'gallade', 'gyarados', 'ironthorns', 'lilliganthisui', 'lucario',
+			'lycanrocdusk', 'mew', 'necrozma', 'oricoriopompom', 'regidrago',
+			'suicune',
+		]:
 			newTiers[poke] = 'NUBL'
-		if newTiers[poke] == 'PU' and poke in ['drednaw','oricoriopompom']:
+		if newTiers[poke] == 'PU' and poke in [
+			'drednaw', 'duraludon', 'flamigo', 'indeedee', 'inteleon',
+			'oricoriopompom', 'raikou', 'scyther',
+		]:
 			newTiers[poke] = 'PUBL'
-		if newTiers[poke] == 'ZU' and poke in ['alcremie', 'articunogalar', 'bruxish', 'delphox', 'dudunsparce', 'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'tornadus', 'uxie']:
+		if newTiers[poke] == 'ZU' and poke in [
+			'alcremie', 'articunogalar', 'bruxish', 'delphox', 'dudunsparce',
+			'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'tornadus', 'uxie'
+		]:
 			newTiers[poke] = 'ZUBL'
 
 	print("")
