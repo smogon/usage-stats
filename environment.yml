@@ -3,4 +3,3 @@ dependencies:
 - ipython
 - python=3.12
 - pip
-- js2py
