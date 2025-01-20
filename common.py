@@ -85,9 +85,9 @@ def fetch_and_parse(url: str) -> dict:
         raise
 
 def getFormats():
+	formats = 'https://play.pokemonshowdown.com/data/formats.js'
 	print('Updating formats')
-	formats = getTextFromURL('https://play.pokemonshowdown.com/data/formats.js')
-	return json.loads(convertJStoJSON(formats))
+	return fetch_and_parse(formats)
 
 def get_battle_formats_data() -> dict:
     formats_data_url = "https://play.pokemonshowdown.com/data/formats-data.js"
