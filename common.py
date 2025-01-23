@@ -55,12 +55,12 @@ def readTable(filename):
 	return usage,nBattles
 
 
-def get_text_from_url(url: str) -> str:
+def getTextFromUrl(url: str) -> str:
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(request) as response:
         return response.read().decode()
 
-def convert_js_to_json(js_data: str) -> str:
+def convertJsToJson(js_data: str) -> str:
     # Remove the export statement (e.g., "exports.SomeData = ")
     js_data = re.sub(r"^exports\.\w+\s*=\s*", "", js_data, flags=re.MULTILINE)
     # Remove the trailing semicolon if present
@@ -69,10 +69,10 @@ def convert_js_to_json(js_data: str) -> str:
     json_ready = re.sub(r"(\w+):", r'"\1":', js_data)
     return json_ready
 
-def fetch_and_parse(url: str) -> dict:
+def fetchAndParse(url: str) -> dict:
     try:
-        js_content = get_text_from_url(url)
-        json_content = convert_js_to_json(js_content)
+        js_content = getTextFromUrl(url)
+        json_content = convertJsToJson(js_content)
         return json.loads(json_content)
     except urllib.error.URLError as e:
         print(f"Network error while fetching {url}: {e}")
@@ -87,12 +87,12 @@ def fetch_and_parse(url: str) -> dict:
 def getFormats():
 	formats = 'https://play.pokemonshowdown.com/data/formats.js'
 	print('Updating formats')
-	return fetch_and_parse(formats)
+	return fetchAndParse(formats)
 
-def get_battle_formats_data() -> dict:
+def getBattleFormatsData() -> dict:
     formats_data_url = "https://play.pokemonshowdown.com/data/formats-data.js"
     print("Updating tiering information")
-    return fetch_and_parse(formats_data_url)
+    return fetchAndParse(formats_data_url)
 
 aliases={
 	'NidoranF': ['Nidoran-F'],
