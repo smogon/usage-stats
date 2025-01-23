@@ -2,7 +2,7 @@ import string
 import sys
 import json
 import pickle
-from common import keyify,readTable,get_battle_formats_data
+from common import keyify,readTable,getBattleFormatsData
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -45,7 +45,7 @@ def main(months):
 	drop =  [0.04515839608,0.04515839608,0.04515839608][len(months)-1]
 	#drop =  [0.02,0.02284003156,0.04515839608][len(months)-1]
 
-	formatsData = get_battle_formats_data()
+	formatsData = getBattleFormatsData()
 
 	curTiers = {}
 	NFE=[]
