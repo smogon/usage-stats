@@ -55,7 +55,7 @@ def readTable(filename):
 	return usage,nBattles
 
 
-def getTextFromUrl(url: str) -> str:
+def getTextFromURL(url: str) -> str:
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(request) as response:
         return response.read().decode()
@@ -71,7 +71,7 @@ def convertJStoJSON(js_data: str) -> str:
 
 def fetchAndParse(url: str) -> dict:
     try:
-        js_content = getTextFromUrl(url)
+        js_content = getTextFromURL(url)
         json_content = convertJStoJSON(js_content)
         return json.loads(json_content)
     except urllib.error.URLError as e:
