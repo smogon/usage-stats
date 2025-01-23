@@ -60,7 +60,7 @@ def getTextFromUrl(url: str) -> str:
     with urllib.request.urlopen(request) as response:
         return response.read().decode()
 
-def convertJsToJson(js_data: str) -> str:
+def convertJStoJSON(js_data: str) -> str:
     # Remove the export statement (e.g., "exports.SomeData = ")
     js_data = re.sub(r"^exports\.\w+\s*=\s*", "", js_data, flags=re.MULTILINE)
     # Remove the trailing semicolon if present
@@ -72,7 +72,7 @@ def convertJsToJson(js_data: str) -> str:
 def fetchAndParse(url: str) -> dict:
     try:
         js_content = getTextFromUrl(url)
-        json_content = convertJsToJson(js_content)
+        json_content = convertJStoJSON(js_content)
         return json.loads(json_content)
     except urllib.error.URLError as e:
         print(f"Network error while fetching {url}: {e}")
