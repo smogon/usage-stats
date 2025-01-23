@@ -271,8 +271,8 @@ def main(months):
 		if newTiers[poke] == 'NU' and poke in [
 			'armarouge', 'cloyster', 'cresselia', 'deoxysdefense', 'feraligatr',
 			'gallade', 'gyarados', 'ironthorns', 'lilliganthisui', 'lucario',
-			'lycanrocdusk', 'mew', 'necrozma', 'oricoriopompom', 'regidrago',
-			'suicune',
+			'lycanrocdusk', 'mew', 'mienshao', 'necrozma', 'oricoriopompom',
+			'regidrago', 'suicune',
 		]:
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in [
