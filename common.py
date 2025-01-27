@@ -3,6 +3,7 @@
 import string
 import math
 import urllib.request
+import urllib.error
 import json
 import re
 
@@ -55,27 +56,43 @@ def readTable(filename):
 
 
 def getTextFromURL(url: str) -> str:
-	return \
-		urllib.request.urlopen(
-			# Don't love spoofing the user agent, but it's either that or installing requests
-			urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-		).read().decode()
+    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(request) as response:
+        return response.read().decode()
 
-def convertJStoJSON(data: str) -> str:
-	return \
-		re.sub("(\\w+):", "\"\\1\":",
-			re.sub("exports.\\w+ = ", "", data)[:-1]
-		)
+def convertJStoJSON(js_data: str) -> str:
+    # Remove the export statement (e.g., "exports.SomeData = ")
+    js_data = re.sub(r"^exports\.\w+\s*=\s*", "", js_data, flags=re.MULTILINE)
+    # Remove the trailing semicolon if present
+    js_data = js_data.rstrip(";")
+    # Quote the keys to make it valid JSON
+    json_ready = re.sub(r"(\w+):", r'"\1":', js_data)
+    return json_ready
+
+def fetchAndParse(url: str) -> dict:
+    try:
+        js_content = getTextFromURL(url)
+        json_content = convertJStoJSON(js_content)
+        return json.loads(json_content)
+    except urllib.error.URLError as e:
+        print(f"Network error while fetching {url}: {e}")
+        raise
+    except json.JSONDecodeError as e:
+        print(f"JSON decoding error for {url}: {e}")
+        raise
+    except Exception as e:
+        print(f"Unexpected error for {url}: {e}")
+        raise
 
 def getFormats():
+	formats = 'https://play.pokemonshowdown.com/data/formats.js'
 	print('Updating formats')
-	formats = getTextFromURL('https://play.pokemonshowdown.com/data/formats.js')
-	return json.loads(convertJStoJSON(formats))
+	return fetchAndParse(formats)
 
-def getBattleFormatsData():
-	print('Updating tiering information')
-	formatsData = getTextFromURL('https://play.pokemonshowdown.com/data/formats-data.js')
-	return json.loads(convertJStoJSON(formatsData))
+def getBattleFormatsData() -> dict:
+    formats_data_url = "https://play.pokemonshowdown.com/data/formats-data.js"
+    print("Updating tiering information")
+    return fetchAndParse(formats_data_url)
 
 aliases={
 	'NidoranF': ['Nidoran-F'],
