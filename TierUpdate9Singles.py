@@ -269,10 +269,10 @@ def main(months):
 		]:
 			newTiers[poke] = 'RUBL'
 		if newTiers[poke] == 'NU' and poke in [
-			'armarouge', 'cloyster', 'cresselia', 'deoxysdefense', 'feraligatr',
-			'gallade', 'gyarados', 'ironthorns', 'lilliganthisui', 'lucario',
-			'lycanrocdusk', 'mew', 'mienshao', 'necrozma', 'oricoriopompom',
-			'regidrago', 'suicune',
+			'armarouge', 'cetitan', 'cloyster', 'cresselia', 'deoxysdefense',
+			'feraligatr', 'gallade', 'gyarados', 'ironthorns', 'lilliganthisui',
+			'lucario', 'lycanrocdusk', 'mew', 'mienshao', 'necrozma', 'oricoriopompom',
+			'oricoriosensu', 'regidrago', 'suicune',
 		]:
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in [
@@ -282,7 +282,8 @@ def main(months):
 			newTiers[poke] = 'PUBL'
 		if newTiers[poke] == 'ZU' and poke in [
 			'alcremie', 'articunogalar', 'bruxish', 'delphox', 'dudunsparce',
-			'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'tornadus', 'uxie'
+			'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'oricoriosensu',
+			'tornadus', 'uxie',
 		]:
 			newTiers[poke] = 'ZUBL'
 
