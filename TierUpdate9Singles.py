@@ -259,7 +259,7 @@ def main(months):
 			'baxcalibur', 'blaziken', 'ceruledge', 'espathra', 'garchomp',
 			'garganacl', 'hoopaunbound', 'ironboulder', 'ironhands', 'kommoo',
 			'latias', 'moltresgalar', 'okidogi', 'pelipper', 'quaquaval',
-            'ursaluna',
+			'ursaluna',
 		]:
 			newTiers[poke] = 'UUBL'
 		if newTiers[poke] == 'RU' and poke in [
