@@ -277,7 +277,7 @@ def main(months):
 		]:
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in [
-			'drednaw', 'duraludon', 'flamigo', 'indeedee', 'inteleon',
+			'dragalge', 'drednaw', 'duraludon', 'flamigo', 'indeedee', 'inteleon',
 			'oricoriopompom', 'raikou', 'scyther', 'torterra',
 		]:
 			newTiers[poke] = 'PUBL'
