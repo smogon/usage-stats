@@ -259,14 +259,14 @@ def main(months):
 			'baxcalibur', 'blaziken', 'ceruledge', 'espathra', 'garchomp',
 			'garganacl', 'hoopaunbound', 'ironboulder', 'ironhands', 'kommoo',
 			'latias', 'moltresgalar', 'okidogi', 'pelipper', 'quaquaval',
-			'ursaluna',
+			'rillaboom', 'ursaluna',
 		]:
 			newTiers[poke] = 'UUBL'
 		if newTiers[poke] == 'RU' and poke in [
 			'blastoise', 'comfey', 'enamorustherian', 'hawlucha', 'haxorus',
 			'hoopaunbound', 'hydreigon', 'ironjugulis', 'ironleaves', 'manaphy',
 			'moltresgalar', 'polteageist', 'thundurus', 'thundurustherian',
-			'yanmega', 'zarude',
+			'yanmega', 'zarude', 'zoroarkhisui',
 		]:
 			newTiers[poke] = 'RUBL'
 		if newTiers[poke] == 'NU' and poke in [
