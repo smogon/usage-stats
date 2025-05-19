@@ -265,8 +265,8 @@ def main(months):
 		if newTiers[poke] == 'RU' and poke in [
 			'blastoise', 'comfey', 'enamorustherian', 'hawlucha', 'haxorus',
 			'hoopaunbound', 'hydreigon', 'ironjugulis', 'ironleaves', 'manaphy',
-			'moltresgalar', 'polteageist', 'thundurus', 'thundurustherian',
-			'yanmega', 'zarude', 'zoroarkhisui',
+			'moltresgalar', 'polteageist', 'oricoriopompom', 'thundurus',
+			'thundurustherian', 'yanmega', 'zarude', 'zoroarkhisui',
 		]:
 			newTiers[poke] = 'RUBL'
 		if newTiers[poke] == 'NU' and poke in [
