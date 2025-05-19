@@ -88,7 +88,7 @@ def main(months):
 
 	(BHOU,BHUU) = usageToTiers(usageBH)
 	makeTable(BHOU,"LC (1630 stats)",keyLookup)
-	dnuBanlist = []
+	dnuBanlist = ['deerling', 'minccino']
 	for poke in usageBH.keys():
 		if usageBH[poke][0] >= drop:
 			dnuBanlist.append(poke)
