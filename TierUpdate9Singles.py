@@ -258,8 +258,8 @@ def main(months):
 		if newTiers[poke] == 'UU' and poke in [
 			'baxcalibur', 'blaziken', 'ceruledge', 'espathra', 'garchomp',
 			'garganacl', 'hoopaunbound', 'ironboulder', 'ironhands', 'kommoo',
-			'latias', 'moltresgalar', 'okidogi', 'pelipper', 'polteageist',
-			'quaquaval', 'rillaboom', 'ursaluna',
+			'latias', 'meowscarada', 'moltresgalar', 'okidogi', 'pelipper',
+			'polteageist', 'quaquaval', 'rillaboom', 'ursaluna',
 		]:
 			newTiers[poke] = 'UUBL'
 		if newTiers[poke] == 'RU' and poke in [
