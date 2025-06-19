@@ -184,8 +184,8 @@ def main(months):
 	for poke in newTiers.keys():
 		if newTiers[poke] == 'UU' and poke in \
 			['blaziken', 'charizardmegax', 'cinderace', 'dondozo', 'gallademega',
-			'gyarados', 'gyaradosmega', 'hoopaunbound', 'ironhands', 'kommoo',
-			 'latios', 'latiosmega', 'manaphy', 'medichammega', 'meowscarada',
+			'gyarados', 'gyaradosmega', 'hawlucha', 'hoopaunbound', 'ironhands',
+			 'kommoo', 'latios', 'latiosmega', 'manaphy', 'medichammega', 'meowscarada',
 			 'ogerponcornerstone', 'pinsirmega', 'tornadustherian', 'weavile',
 			 'xurkitree', 'zapdosgalar', 'annihilape', 'baxcalibur', 'ceruledge',
 			 'espathra', 'kartana', 'kyurem', 'mawilemega', 'zamazenta']:
