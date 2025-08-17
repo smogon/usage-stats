@@ -265,15 +265,16 @@ def main(months):
 		if newTiers[poke] == 'RU' and poke in [
 			'blastoise', 'comfey', 'enamorustherian', 'hawlucha', 'haxorus',
 			'hoopaunbound', 'hydreigon', 'ironjugulis', 'ironleaves', 'manaphy',
-			'moltresgalar', 'polteageist', 'oricoriopompom', 'thundurus',
-			'thundurustherian', 'yanmega', 'zarude', 'zoroarkhisui',
+			'moltresgalar', 'polteageist', 'ogerpon', 'oricoriopompom', 'salamence',
+			'serperior', 'thundurus', 'thundurustherian', 'yanmega', 'zarude',
+			'zoroarkhisui',
 		]:
 			newTiers[poke] = 'RUBL'
 		if newTiers[poke] == 'NU' and poke in [
 			'armarouge', 'cetitan', 'cloyster', 'cresselia', 'deoxysdefense',
 			'feraligatr', 'gallade', 'gyarados', 'ironthorns', 'lilliganthisui',
 			'lucario', 'lycanrocdusk', 'mew', 'mienshao', 'necrozma', 'oricoriopompom',
-			'oricoriosensu', 'porygonz', 'regidrago', 'suicune',
+			'oricoriosensu', 'politoed', 'porygonz', 'regidrago', 'suicune',
 		]:
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in [
@@ -284,7 +285,7 @@ def main(months):
 		if newTiers[poke] == 'ZU' and poke in [
 			'alcremie', 'articunogalar', 'bruxish', 'delphox', 'dudunsparce',
 			'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'oricoriosensu',
-			'tornadus', 'uxie',
+			'porygon2', 'tornadus', 'uxie',
 		]:
 			newTiers[poke] = 'ZUBL'
 

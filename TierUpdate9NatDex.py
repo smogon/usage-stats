@@ -188,10 +188,10 @@ def main(months):
 			 'kommoo', 'latios', 'latiosmega', 'manaphy', 'medichammega', 'meowscarada',
 			 'ogerponcornerstone', 'pinsirmega', 'tornadustherian', 'weavile',
 			 'xurkitree', 'zapdosgalar', 'annihilape', 'baxcalibur', 'ceruledge',
-			 'espathra', 'kartana', 'kyurem', 'mawilemega', 'zamazenta']:
+			 'espathra', 'kartana', 'kyurem', 'mawilemega', 'zamazenta', 'ironcrown', 'tyranitarmega']:
 			newTiers[poke] = 'UUBL'
 		elif newTiers[poke] == 'RU' and poke in \
-			['aerodactylmega', 'alakazam', 'altariamega', 'bisharp',
+			['aerodactylmega', 'alakazam', 'altariamega', 'archaludon', 'bisharp',
 			 'blacephalon', 'buzzwole', 'dondozo', 'enamorus', 'gallademega',
 			 'gardevoirmega', 'gengar', 'gyarados', 'hawlucha', 'heracrossmega',
 			 'ironhands', 'ironleaves', 'jirachi', 'keldeo', 'keldeoresolute',
