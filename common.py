@@ -94,7 +94,7 @@ def getBattleFormatsData() -> dict:
     print("Updating tiering information")
     return fetchAndParse(formats_data_url)
 
-def print_type_mu_chart(mu_chart_file, mtx):
+def print_type_mu_chart(mu_chart_file, mtx, table = 0):
 	types = ["normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel",
 		 "fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy"]
 	hline = "+{}+".format("+".join(["-"*8]*(19)))
@@ -111,7 +111,12 @@ def print_type_mu_chart(mu_chart_file, mtx):
 		line = "|" + row_type.center(8) + "|"  # row header
 		for j in range(18):
 			val = mtx[i][j]
-			s = f"{val:.3f}"
+			if table == 1:
+				s = str(round(val))
+			elif table == 2:
+				s = f"{val:.2f}"
+			else:
+				s = f"{val:.3f}"
 			line += s.center(8) + "|"
 		mu_chart_file.write(line + "\n")
 		mu_chart_file.write(hline + "\n")

@@ -50,8 +50,8 @@ function nextprocess {
 	python StatCounter.py $tier 1500 &&
 	python batchMovesetCounter.py $tier 1500 > Stats/moveset/$tier-1500.txt
 #	python MegaCounter.py Stats/chaos/$tier-1500.json > Stats/mega/$tier-1500.txt
-	
-	
+
+
 }
 export -f nextprocess
 

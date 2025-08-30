@@ -84,14 +84,6 @@ ratingCounter = []
 weightCounter = []
 WLratings = {'win':[],'loss':[]}
 
-#MU chart
-types = ["mononormal", "monofighting", "monoflying", "monopoison", "monoground", "monorock", "monobug", "monoghost", "monosteel", "monofire", "monowater", "monograss", "monoelectric", "monopsychic", "monoice", "monodragon", "monodark", "monofairy"]
-type_index = {t: i for i, t in enumerate(types)}
-monotype_MU_mtx_raw = [[0 for _ in range(18)] for _ in range(18)]
-monotype_MU_mtx_percentage = [[0 for _ in range(18)] for _ in range(18)]
-monotype_MU_mtx_weighted_raw= [[0 for _ in range(18)] for _ in range(18)]
-monotype_MU_mtx_weighted_percentage = [[0 for _ in range(18)] for _ in range(18)]
-
 t=tier
 if tier.endswith('suspecttest'):
 	t=t[:-11]
@@ -101,6 +93,7 @@ for line in file:
 	battles = json.loads(line)
 
 	for battle in battles:
+
 		weight={}
 		if 'turns' in battle.keys() and t not in non6v6Formats:
 			if battle['turns'] < 3 and t not in nonSinglesFormats:
@@ -108,7 +101,7 @@ for line in file:
 			elif battle['turns'] < 2:
 				continue
 		for player in ['p1','p2']:
-			if teamtype and teamtype != "muchart":
+			if teamtype:
 				if teamtype not in battle[player]['tags']:
 					continue
 			team = []
@@ -132,31 +125,6 @@ for line in file:
 						weight[player] = weighting(1459.83938566,122.858308077,cutoff)
 
 			weightCounter.append(weight[player])
-
-			#Monotype matchup chart
-			if teamtype == "muchart":
-				p1_type = None
-				p2_type = None
-				for type in types:
-					if type in battle['p1']['tags']:
-						p1_type = type
-					if type in battle['p2']['tags']:
-						p2_type = type
-				if p1_type and p2_type:
-					if(battle['p1']['outcome'] == 'win'):
-						monotype_MU_mtx_raw[type_index[p1_type]][type_index[p2_type]] += 1
-						monotype_MU_mtx_weighted_raw[p1_type][type_index[p2_type]] += weight['p2']/weight['p1']
-					else:
-						monotype_MU_mtx_raw[type_index[p2_type]][type_index[p1_type]] += 1
-						monotype_MU_mtx_weighted_raw[p1_type][type_index[p2_type]] += weight['p1']/weight['p2']
-					for i in range(18):
-						for j in range(0, i):
-							total = monotype_MU_mtx_raw[i][j] + monotype_MU_mtx_raw[j][i]
-							weighted_total = monotype_MU_mtx_weighted_raw[i][j] + monotype_MU_mtx_weighted_raw[j][i]
-							monotype_MU_mtx_percentage[i][j] = monotype_MU_mtx_raw[i][j]/total
-							monotype_MU_mtx_percentage[j][i] = monotype_MU_mtx_raw[j][i]/total
-							monotype_MU_mtx_weighted_percentage[i][j] = monotype_MU_mtx_weighted_raw[i][j]/weighted_total
-							monotype_MU_mtx_weighted_percentage[j][i] = monotype_MU_mtx_weighted_raw[j][i]/weighted_total
 
 			for poke in battle[player]['team']:
 				#annoying alias shit
@@ -265,16 +233,6 @@ pokes = []
 for i in pokedict:
 	pokes.append([i]+pokedict[i])
 
-
-#MU chart, writing is separate
-if teamtype == "muchart":
-	filename = "Stats/gen9monotype-mono/"+tier+"matchup_chart-"+cutoff+".txt"
-	with open(filename, "w") as mu_chart_file:
-		print_type_mu_chart(mu_chart_file, monotype_MU_mtx_raw)
-		print_type_mu_chart(mu_chart_file, monotype_MU_mtx_percentage)
-		print_type_mu_chart(mu_chart_file, monotype_MU_mtx_weighted_raw)
-		print_type_mu_chart(mu_chart_file, monotype_MU_mtx_weighted_percentage)
-	sys.exit()
 
 #write teammates and encounter matrix to file
 filename="Raw/moveset/"+tier+"/teammate"+specs+".pickle"
