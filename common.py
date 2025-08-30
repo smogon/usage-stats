@@ -27,7 +27,7 @@ def weighting(rating,deviation,cutoff):
 #if (r2,d2)=(1500,350) this becomes the GXE formula
 def victoryChance(r1,d1,r2,d2):
 	C=3.0*pow(math.log(10.0),2.0)/pow(400.0*math.pi,2)
-	return 1.0 / (1.0 + pow(10.0,(r2-r1)/400.0/math.sqrt(1.0+C*(pow(d1,2.0)+pow(d2,2.0))))) 
+	return 1.0 / (1.0 + pow(10.0,(r2-r1)/400.0/math.sqrt(1.0+C*(pow(d1,2.0)+pow(d2,2.0)))))
 
 def readTable(filename):
 	file = open(filename)
@@ -44,12 +44,12 @@ def readTable(filename):
 			break
 		name = line[2][1:]
 
-		while name[len(name)-1] == ' ': 
+		while name[len(name)-1] == ' ':
 			#remove extraneous spaces
 			name = name[0:len(name)-1]
 
 		pct = line[3][1:line[3].index('%')]
-	
+
 		usage[name]=float(pct)/100.0
 
 	return usage,nBattles
@@ -93,6 +93,29 @@ def getBattleFormatsData() -> dict:
     formats_data_url = "https://play.pokemonshowdown.com/data/formats-data.js"
     print("Updating tiering information")
     return fetchAndParse(formats_data_url)
+
+def print_type_mu_chart(mu_chart_file, mtx):
+	types = ["normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel",
+		 "fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy"]
+	hline = "+{}+".format("+".join(["-"*8]*(19)))
+
+	mu_chart_file.write(hline + "\n")
+
+	header = "|" + " ".center(8) + "|"
+	for t in types:
+		header += t.center(8) + "|"
+	mu_chart_file.write(header + "\n")
+	mu_chart_file.write(hline + "\n")
+
+	for i, row_type in enumerate(types):
+		line = "|" + row_type.center(8) + "|"  # row header
+		for j in range(18):
+			val = mtx[i][j]
+			s = f"{val:.3f}"
+			line += s.center(8) + "|"
+		mu_chart_file.write(line + "\n")
+		mu_chart_file.write(hline + "\n")
+	mu_chart_file.write("\n")
 
 aliases={
 	'NidoranF': ['Nidoran-F'],

@@ -23,13 +23,32 @@ function process {
 	python StatCounter.py $tier 1500 $tag &&
 	python batchMovesetCounter.py $tier 1500 $tag > Stats/moveset/$tier-$tag-1500.txt
 #	python MegaCounter.py Stats/chaos/$tier-$tag-1500.json > Stats/mega/$tier-$tag-1500.txt
-	
-	
-	
+
+
+
 }
 export -f process
 
 parallel -j 5 process ::: mononormal monofighting monoflying monopoison monoground monorock monobug monoghost monosteel monofire monowater monograss monoelectric monopsychic monoice monodragon monodark monofairy
+
+function process2 {
+	tier=$1
+	tag=muchart
+
+	echo "Processing "$tier >> log.log
+
+	python StatCounter.py $tier 1630 $tag
+
+	python StatCounter.py $tier 1760 $tag
+
+	python StatCounter.py $tier 0 $tag
+
+	python StatCounter.py $tier 1500 $tag
+}
+export -f process2
+
+parallel -j 2 process2 ::: gen9monotype nationaldexmonotype
+
 mkdir Stats/monotype
 mv Stats/gen9monotype-mono* Stats/monotype/.
 for d in chaos leads metagame moveset
