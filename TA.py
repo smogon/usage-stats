@@ -128,6 +128,7 @@ megas=[
 	['venusaur','venusaurite','thickfat'],
 	['victreebel','victreebelite','noability'],
 	['zygarde','zygardite','noability'],
+	['zygarde10','zygardite','noability'],
 	['kyogre','blueorb','primordialsea'],
 	['groudon','redorb','desolateland'],
 	['crucibelle','crucibellite','magicguard'],
