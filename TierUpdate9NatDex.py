@@ -198,7 +198,8 @@ def main(months):
 			 'kyurem', 'latiasmega', 'latios', 'latiosmega', 'lilliganthisui',
 			 'mamoswine', 'manaphy', 'mew', 'moltresgalar', 'pecharunt', 'porygonz',
 			 'quaquaval', 'salamence', 'sableyemega', 'terrakion', 'victini',
-			 'xurkitree', 'zapdosgalar', 'zoroarkhisui', 'thundurus', 'okidogi']:
+			 'xurkitree', 'zapdosgalar', 'zoroarkhisui', 'thundurus', 'okidogi',
+			 'mienshao']:
 			newTiers[poke] = 'RUBL'
 
 	print("")
