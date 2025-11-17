@@ -259,7 +259,7 @@ def main(months):
 			'baxcalibur', 'blaziken', 'ceruledge', 'espathra', 'garchomp',
 			'garganacl', 'hoopaunbound', 'ironboulder', 'ironhands', 'kommoo',
 			'latias', 'meowscarada', 'moltresgalar', 'okidogi', 'pelipper',
-			'polteageist', 'quaquaval', 'rillaboom', 'ursaluna',
+			'polteageist', 'quaquaval', 'rillaboom', 'ursaluna', 'ogerponcornerstone'
 		]:
 			newTiers[poke] = 'UUBL'
 		if newTiers[poke] == 'RU' and poke in [
@@ -267,25 +267,26 @@ def main(months):
 			'hoopaunbound', 'hydreigon', 'ironjugulis', 'ironleaves', 'manaphy',
 			'moltresgalar', 'polteageist', 'ogerpon', 'oricoriopompom', 'salamence',
 			'serperior', 'thundurus', 'thundurustherian', 'yanmega', 'zarude',
-			'zoroarkhisui',
+			'zoroarkhisui', 'gyarados', 'volcanion', 'mamoswine', 
 		]:
 			newTiers[poke] = 'RUBL'
 		if newTiers[poke] == 'NU' and poke in [
 			'armarouge', 'cetitan', 'cloyster', 'cresselia', 'deoxysdefense',
 			'feraligatr', 'gallade', 'gyarados', 'ironthorns', 'lilliganthisui',
 			'lucario', 'lycanrocdusk', 'mew', 'mienshao', 'necrozma', 'oricoriopompom',
-			'oricoriosensu', 'politoed', 'porygonz', 'regidrago', 'suicune',
+			'oricoriosensu', 'politoed', 'porygonz', 'regidrago', 'suicune', 'azelf',
+            'terrakion',
 		]:
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in [
 			'dragalge', 'drednaw', 'duraludon', 'flamigo', 'indeedee', 'inteleon',
-			'oricoriopompom', 'raikou', 'scyther', 'torterra',
+			'oricoriopompom', 'raikou', 'scyther', 'torterra', 'heracross',
 		]:
 			newTiers[poke] = 'PUBL'
 		if newTiers[poke] == 'ZU' and poke in [
 			'alcremie', 'articunogalar', 'bruxish', 'delphox', 'dudunsparce',
 			'electrodehisui', 'emboar', 'hariyama', 'kingdra', 'oricoriosensu',
-			'porygon2', 'tornadus', 'uxie',
+			'porygon2', 'tornadus', 'uxie', 'floatzel', 'bellossom',
 		]:
 			newTiers[poke] = 'ZUBL'
 
