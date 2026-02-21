@@ -259,7 +259,8 @@ def main(months):
 			'baxcalibur', 'blaziken', 'ceruledge', 'espathra', 'garchomp',
 			'garganacl', 'hoopaunbound', 'ironboulder', 'ironhands', 'kommoo',
 			'latias', 'meowscarada', 'moltresgalar', 'okidogi', 'pelipper',
-			'polteageist', 'quaquaval', 'rillaboom', 'ursaluna', 'ogerponcornerstone'
+			'polteageist', 'quaquaval', 'rillaboom', 'ursaluna', 'ogerponcornerstone',
+            'zarude'
 		]:
 			newTiers[poke] = 'UUBL'
 		if newTiers[poke] == 'RU' and poke in [
@@ -267,7 +268,7 @@ def main(months):
 			'hoopaunbound', 'hydreigon', 'ironjugulis', 'ironleaves', 'manaphy',
 			'moltresgalar', 'polteageist', 'ogerpon', 'oricoriopompom', 'salamence',
 			'serperior', 'thundurus', 'thundurustherian', 'yanmega', 'zarude',
-			'zoroarkhisui', 'gyarados', 'volcanion', 'mamoswine', 
+			'zoroarkhisui', 'gyarados', 'volcanion', 'mamoswine', 'lilliganthisui',
 		]:
 			newTiers[poke] = 'RUBL'
 		if newTiers[poke] == 'NU' and poke in [
@@ -280,7 +281,7 @@ def main(months):
 			newTiers[poke] = 'NUBL'
 		if newTiers[poke] == 'PU' and poke in [
 			'dragalge', 'drednaw', 'duraludon', 'flamigo', 'indeedee', 'inteleon',
-			'oricoriopompom', 'raikou', 'scyther', 'torterra', 'heracross',
+			'oricoriopompom', 'raikou', 'scyther', 'torterra', 'heracross', 'frosmoth',
 		]:
 			newTiers[poke] = 'PUBL'
 		if newTiers[poke] == 'ZU' and poke in [

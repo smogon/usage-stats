@@ -184,11 +184,12 @@ def main(months):
 	for poke in newTiers.keys():
 		if newTiers[poke] == 'UU' and poke in \
 			['blaziken', 'charizardmegax', 'cinderace', 'dondozo', 'gallademega',
-			'gyarados', 'gyaradosmega', 'hawlucha', 'hoopaunbound', 'ironhands',
+			 'gyarados', 'gyaradosmega', 'hawlucha', 'hoopaunbound', 'ironhands',
 			 'kommoo', 'latios', 'latiosmega', 'manaphy', 'medichammega', 'meowscarada',
 			 'ogerponcornerstone', 'pinsirmega', 'tornadustherian', 'weavile',
 			 'xurkitree', 'zapdosgalar', 'annihilape', 'baxcalibur', 'ceruledge',
-			 'espathra', 'kartana', 'kyurem', 'mawilemega', 'zamazenta', 'ironcrown', 'tyranitarmega']:
+			 'espathra', 'kartana', 'kyurem', 'mawilemega', 'zamazenta', 'ironcrown',
+			 'tyranitarmega', 'ironmoth', 'okidogi']:
 			newTiers[poke] = 'UUBL'
 		elif newTiers[poke] == 'RU' and poke in \
 			['aerodactylmega', 'alakazam', 'altariamega', 'archaludon', 'bisharp',
@@ -199,7 +200,7 @@ def main(months):
 			 'mamoswine', 'manaphy', 'mew', 'moltresgalar', 'pecharunt', 'porygonz',
 			 'quaquaval', 'salamence', 'sableyemega', 'terrakion', 'victini',
 			 'xurkitree', 'zapdosgalar', 'zoroarkhisui', 'thundurus', 'okidogi',
-			 'mienshao']:
+			 'mienshao', 'slowbromega', ]:
 			newTiers[poke] = 'RUBL'
 
 	print("")
