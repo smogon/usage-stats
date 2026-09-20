@@ -14,6 +14,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as zlib from 'zlib';
+import * as os from 'os';
+import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { keyify, weighting, readTable, reverseAliases, victoryChance } from './common';
 import { nmod, statFormula, baseStats } from './TA';
 
@@ -61,16 +63,34 @@ const EV_STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const;
 const NATURE_STAT_IDS = { hp: -1, atk: 0, def: 1, spa: 2, spd: 3, spe: 4 };
 const NEUTRAL_NATURES = new Set(['serious', 'docile', 'quirky', 'bashful']);
 
-const args = process.argv.slice(2);
-if (args.length < 1) {
-  process.stderr.write('Usage: batchMovesetCounter.ts <tier> [cutoff] [teamtype]\n');
-  process.exit(1);
+// worker threads do not inherit process.argv from the main thread
+interface WorkerConfig {
+  tier: string;
+  cutoff: number;
+  teamtype: string | null;
 }
 
-const tier = args[0];
-const cutoff = args.length > 1 ? parseFloat(args[1]) : 1500;
+let tier: string;
+let cutoff: number;
+let teamtype: string | null;
+
+if (!isMainThread) {
+  const cfg = (workerData as WorkerInput).config;
+  tier = cfg.tier;
+  cutoff = cfg.cutoff;
+  teamtype = cfg.teamtype;
+} else {
+  const args = process.argv.slice(2);
+  if (args.length < 1) {
+    process.stderr.write('Usage: batchMovesetCounter.ts <tier> [cutoff] [teamtype]\n');
+    process.exit(1);
+  }
+  tier = args[0];
+  cutoff = args.length > 1 ? parseFloat(args[1]) : 1500;
+  teamtype = args.length > 2 ? keyify(args[2]) : null;
+}
+
 const cutoffDeviation = 0;
-const teamtype = args.length > 2 ? keyify(args[2]) : null;
 
 let specs = '-';
 if (teamtype) specs += teamtype + '-';
@@ -92,7 +112,8 @@ function movesetCounter(
   filename: string,
   cutoffArg: number,
   teamtypeArg: string | null,
-  usageArg: Record<string, number>
+  usageArg: Record<string, number>,
+  outLines: string[]
 ): MovesetStuffOutput {
   const rawBuffer = zlib.gunzipSync(fs.readFileSync(filename));
   const split = Buffer.from('][');
@@ -256,13 +277,13 @@ function movesetCounter(
   const separator = '+' + '-'.repeat(tablewidth) + '+';
   const padLine = (s: string) => s.padEnd(tablewidth + 1) + '|';
 
-  console.log(separator);
-  console.log(padLine(`| ${speciesName}`));
-  console.log(separator);
-  console.log(padLine(`| Raw count: ${rawCount}`));
-  console.log(padLine(`| Avg. weight: ${weightCount > 0 ? (weightSum / weightCount).toString() : '---'}`));
-  console.log(padLine(`| Viability Ceiling: ${maxGXE[1]}`));
-  console.log(separator);
+  outLines.push(separator);
+  outLines.push(padLine(`| ${speciesName}`));
+  outLines.push(separator);
+  outLines.push(padLine(`| Raw count: ${rawCount}`));
+  outLines.push(padLine(`| Avg. weight: ${weightCount > 0 ? (weightSum / weightCount).toString() : '---'}`));
+  outLines.push(padLine(`| Viability Ceiling: ${maxGXE[1]}`));
+  outLines.push(separator);
 
   const sections = ['Abilities','Items','Spreads','Moves','Tera Types','Teammates','Checks and Counters'] as const;
 
@@ -284,7 +305,7 @@ function movesetCounter(
       if (!hasEntries) continue;
     }
 
-    console.log(`| ${x}`.padEnd(tablewidth + 1) + '|');
+    outLines.push(`| ${x}`.padEnd(tablewidth + 1) + '|');
 
     type TableRow = [string, number | ChecksCountersEntry];
     let table: TableRow[];
@@ -318,7 +339,7 @@ function movesetCounter(
       if (isCapped) {
         if (x !== 'Teammates' && x !== 'Checks and Counters') {
           const otherPct = x === 'Moves' ? 400.0 * (1.0 - total) : 100.0 * (1.0 - total);
-          console.log(padLine(`| Other ${otherPct.toFixed(3)}%`));
+          outLines.push(padLine(`| Other ${otherPct.toFixed(3)}%`));
         }
         break;
       }
@@ -344,14 +365,14 @@ function movesetCounter(
         line = padLine(`| ${name} ${(100.0 * (val as number) / count).toFixed(3)}%`);
       }
 
-      console.log(line);
+      outLines.push(line);
 
       if (x === 'Moves') total += (val as number) / count / 4.0;
       else if (x === 'Teammates') total += (val as number) / count / 5.0;
       else if (x !== 'Checks and Counters') total += (val as number) / count;
     }
 
-    console.log(separator);
+    outLines.push(separator);
   }
 
   return stuff;
@@ -359,36 +380,122 @@ function movesetCounter(
 
 // write chaos files
 
-let pokes: [string, number][] = Object.entries(usage);
-if (['randombattle','challengecup','challengecup1v1','seasonal'].includes(tier)) {
-  pokes.sort((a, b) => a[0].localeCompare(b[0]));
+interface SpeciesResult {
+  pokeName: string;
+  output: string;
+  stuffResult: MovesetStuffOutput;
+}
+
+// A single species' raw file being unreadable/corrupt is logged
+// and skipped instead of aborting the whole tier's output.
+function processPokeList(pokeList: [string, number][]): SpeciesResult[] {
+  const results: SpeciesResult[] = [];
+  for (const [pokeName, pct] of pokeList) {
+    const filename = `Raw/moveset/${tier}/${keyify(pokeName)}`;
+    const outLines: string[] = [];
+    try {
+      const stuffResult = movesetCounter(filename, cutoff, teamtype, usage, outLines);
+      stuffResult.usage = pct;
+      results.push({ pokeName, output: outLines.length ? outLines.join('\n') + '\n' : '', stuffResult });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      process.stderr.write(`Skipping ${pokeName} (${filename}): ${message}\n`);
+    }
+  }
+  return results;
+}
+
+interface WorkerInput {
+  pokeList: [string, number][];
+  config: WorkerConfig;
+}
+
+if (!isMainThread) {
+  const { pokeList } = workerData as WorkerInput;
+  const results = processPokeList(pokeList);
+  parentPort!.postMessage(results);
 } else {
-  pokes.sort((a, b) => b[1] - a[1]);
+  main();
 }
 
-const chaos: {
-  info: { metagame: string; cutoff: number; 'cutoff deviation': number; 'team type': string | null; 'number of battles': number };
-  data: Record<string, MovesetStuffOutput>;
-} = {
-  info: {
-    metagame: tier,
-    cutoff,
-    'cutoff deviation': cutoffDeviation,
-    'team type': teamtype,
-    'number of battles': nBattles,
-  },
-  data: {},
-};
+function finalize(results: SpeciesResult[]): void {
+  const chaos: {
+    info: { metagame: string; cutoff: number; 'cutoff deviation': number; 'team type': string | null; 'number of battles': number };
+    data: Record<string, MovesetStuffOutput>;
+  } = {
+    info: {
+      metagame: tier,
+      cutoff,
+      'cutoff deviation': cutoffDeviation,
+      'team type': teamtype,
+      'number of battles': nBattles,
+    },
+    data: {},
+  };
 
-for (const [pokeName, pct] of pokes) {
-  if (pct < 0.0001) break; // 1/100th of a percent
-  const filename = `Raw/moveset/${tier}/${keyify(pokeName)}`;
-  const stuffResult = movesetCounter(filename, cutoff, teamtype, usage);
-  stuffResult.usage = pct;
-  chaos.data[pokeName] = stuffResult;
+  const outParts: string[] = [];
+  for (const r of results) {
+    outParts.push(r.output);
+    chaos.data[r.pokeName] = r.stuffResult;
+  }
+  process.stdout.write(outParts.join(''));
+
+  const chaosFilename = `Stats/chaos/${tier}${specs}.json`;
+  const chaosDir = path.dirname(chaosFilename);
+  if (!fs.existsSync(chaosDir)) fs.mkdirSync(chaosDir, { recursive: true });
+  fs.writeFileSync(chaosFilename, JSON.stringify(chaos));
 }
 
-const chaosFilename = `Stats/chaos/${tier}${specs}.json`;
-const chaosDir = path.dirname(chaosFilename);
-if (!fs.existsSync(chaosDir)) fs.mkdirSync(chaosDir, { recursive: true });
-fs.writeFileSync(chaosFilename, JSON.stringify(chaos));
+function main(): void {
+  let pokes: [string, number][] = Object.entries(usage);
+  if (['randombattle','challengecup','challengecup1v1','seasonal'].includes(tier)) {
+    pokes.sort((a, b) => a[0].localeCompare(b[0]));
+  } else {
+    pokes.sort((a, b) => b[1] - a[1]);
+  }
+
+  const pokesToProcess: [string, number][] = [];
+  for (const [pokeName, pct] of pokes) {
+    if (pct < 0.0001) break; // 1/100th of a percent
+    pokesToProcess.push([pokeName, pct]);
+  }
+
+  if (pokesToProcess.length === 0) {
+    finalize([]);
+    return;
+  }
+
+  const numCpus = os.cpus().length;
+  const load = os.loadavg()[0];
+  const availableCores = Math.max(1, Math.floor(numCpus - load));
+  const numWorkers = Math.min(availableCores, pokesToProcess.length);
+
+  if (numWorkers <= 1) {
+    finalize(processPokeList(pokesToProcess));
+    return;
+  }
+
+  const chunkSize = Math.ceil(pokesToProcess.length / numWorkers);
+  const chunks: [string, number][][] = [];
+  for (let i = 0; i < pokesToProcess.length; i += chunkSize) {
+    chunks.push(pokesToProcess.slice(i, i + chunkSize));
+  }
+
+  const chunkResults: SpeciesResult[][] = new Array(chunks.length);
+  let done = 0;
+
+  chunks.forEach((chunk, idx) => {
+    const input: WorkerInput = { pokeList: chunk, config: { tier, cutoff, teamtype } };
+    const worker = new Worker(__filename, { workerData: input });
+    worker.on('message', (msg: SpeciesResult[]) => {
+      chunkResults[idx] = msg;
+      if (++done === chunks.length) {
+        finalize(chunkResults.flat());
+      }
+    });
+    worker.on('error', err => {
+      process.stderr.write(`Worker error: ${err}\n`);
+      process.exit(1);
+    });
+  });
+}

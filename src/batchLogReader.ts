@@ -843,8 +843,8 @@ async function main(argv: string[]): Promise<void> {
   }
 
   const numCpus = os.cpus().length;
-  const load5m = os.loadavg()[1];
-  const availableCores = Math.max(1, Math.floor(numCpus - load5m));
+  const load = os.loadavg()[0];
+  const availableCores = Math.max(1, Math.floor(numCpus - load));
   const numWorkers = Math.min(availableCores, allFiles.length);
 
   const chunkSize = Math.ceil(allFiles.length / numWorkers);

@@ -265,6 +265,17 @@ async function streamBattles(filename: string): Promise<void> {
     const gunzip     = zlib.createGunzip();
     const rl = readline.createInterface({ input: fileStream.pipe(gunzip), crlfDelay: Infinity });
 
+    // find which file was being read and how far it got before failing
+    const wrapError = (err: unknown): Error => {
+      const reason = err instanceof Error ? err.message : String(err);
+      const wrapped = new Error(
+        `streamBattles failed for tier "${tier}" reading ${filename} ` +
+        `(processed ${battleCount} battles before failure): ${reason}`
+      );
+      if (err instanceof Error && err.stack) wrapped.stack = wrapped.message + '\n' + err.stack;
+      return wrapped;
+    };
+
     rl.on('line', (line: string) => {
       if (!line.trim()) return;
       const battles: BattleRecord[] = JSON.parse(line);
@@ -272,9 +283,9 @@ async function streamBattles(filename: string): Promise<void> {
     });
 
     rl.on('close', resolve);
-    rl.on('error', reject);
-    fileStream.on('error', reject);
-    gunzip.on('error', reject);
+    rl.on('error', (err) => reject(wrapError(err)));
+    fileStream.on('error', (err) => reject(wrapError(err)));
+    gunzip.on('error', (err) => reject(wrapError(err)));
   });
 }
 

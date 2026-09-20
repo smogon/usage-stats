@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Assumes `npm run build` has been run previously.
 # Edit the `month` and `for d in` line as needed.
 #
 # Usage:
@@ -22,7 +23,7 @@ do
 	for i in $logFolder/$month/*
 	do
 		tier=$(basename $i)
-		if [[ $tier == seasonal* ]] || [[ $tier == *random* ]] || [[ $tier == *computer* ]] || [[ $tier == *custom* ]] || [[ $tier == *petmod* ]] || [[ $tier == *superstaff* ]] || [[ $tier == *factory* ]] || [[ $tier == *challengecup* ]] || [[ $tier == *hackmonscup* ]] || [[ $tier == *digimon* ]] || [[ $tier == *crazyhouse* ]] || [[ $tier == *ferventimpersonation* ]] || [[ $tier == *brokencup* ]]; then
+		if [[ $tier == seasonal* ]] || [[ $tier == *random* ]] || [[ $tier == *computer* ]] || [[ $tier == *custom* ]] || [[ $tier == *petmod* ]] || [[ $tier == *superstaff* ]] || [[ $tier == *factory* ]] || [[ $tier == *challengecup* ]] || [[ $tier == *hackmonscup* ]] || [[ $tier == *digimon* ]] || [[ $tier == *crazyhouse* ]] || [[ $tier == *ferventimpersonation* ]] || [[ $tier == *brokencup* ]] || [[ $tier == *livepatchbattles* ]] || [[ $tier == *deltamon* ]]; then
 			echo Skipping $tier/$month-$day
 			continue
 		fi
@@ -46,6 +47,6 @@ echo $(date)
 if [[ "$partial" == false ]]; then
 	./CompressStats.sh $month
 	echo $(date)
-	gzip -rk9 Stats/
+	gzip -r9 Stats/
 	echo $(date)
 fi
