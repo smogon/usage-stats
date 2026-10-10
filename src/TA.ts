@@ -173,33 +173,57 @@ export function getMegaAbility(species: string, item: string): string | undefine
 // Sets of moves, Abilities, items
 
 // analyzePoke
-const healingMoves        = new Set(['recover','slackoff','healorder','milkdrink','roost','moonlight','morningsun','synthesis','wish','aquaring','rest','softboiled','swallow','leechseed']);
-const healBellMoves       = new Set(['healbell','aromatherapy']);
+const healingMoves        = new Set(['recover','softboiled','rest','milkdrink','morningsun','synthesis','moonlight','swallow','wish','ingrain','slackoff','roost','aquaring','healorder','lunardance','shoreup','strengthsap','lifedew','junglehealing','lunarblessing','revivalblessing']);
+const healBellMoves       = new Set(['healbell','aromatherapy','sparklyswirl']);
 const offensiveAbilities  = new Set(['chlorophyll','download','hustle','moxie','reckless','sandrush','solarpower','swiftswim','technician','tintedlens','darkaura','fairyaura','infiltrator','parentalbond','protean','strongjaw','sweetveil','toughclaws','aerilate','normalize','pixilate','refrigerate']);
-const trappingMoves       = new Set(['block','meanlook','spiderweb','pursuit']);
+const trappingMoves       = new Set(['block','spiderweb','meanlook','pursuit','fairylock','thousandwaves','spiritshackle','anchorshot','jawlock','octolock']);
 const defensiveAbilities  = new Set(['dryskin','filter','hydration','icebody','intimidate','ironbarbs','marvelscale','naturalcure','magicguard','multiscale','raindish','roughskin','solidrock','thickfat','unaware','aromaveil','bulletproof','cheekpouch','gooey']);
-const strongSetupMoves    = new Set(['curse','dragondance','growth','shiftgear','swordsdance','fierydance','nastyplot','tailglow','quiverdance','geomancy']);
-const weakSetupMoves      = new Set(['acupressure','bulkup','coil','howl','workup','meditate','sharpen','calmmind','chargebeam','agility','autotomize','flamecharge','rockpolish','doubleteam','minimize','tailwind','poweruppunch','rototiller']);
-const protectMoves        = new Set(['protect','detect','kingsshield','matblock','spikyshield']);
+const strongSetupMoves    = new Set(['swordsdance','acidarmor','bellydrum','tailglow','irondefense','dragondance','nastyplot','quiverdance','shellsmash','shiftgear','fierydance','geomancy','extremeevoboost','clangoroussoulblaze','noretreat','clangoroussoul','meteorbeam','mysticalpower','victorydance','filletaway','torchsong','electroshot']);
+const weakSetupMoves      = new Set(['growth','meditate','agility','doubleteam','minimize','sharpen','curse','rapidspin','howl','bulkup','calmmind','dragondance','tailwind','acupressure','rockpolish','chargebeam','honeclaws','autotomize','flamecharge','coil','workup','rototiller','poweruppunch','takeheart','tidyup','trailblaze']);
+const protectMoves        = new Set(['protect','detect','matblock','kingsshield','spikyshield','banefulbunker','obstruct','silktrap','burningbulwark']);
 const phazingMoves        = new Set(['whirlwind','roar','circlethrow','dragontail']);
-const hazeMoves           = new Set(['haze','clearsmog']);
-const paraMoves           = new Set(['thunderwave','stunspore','glare','nuzzle']);
-const confusionMoves      = new Set(['supersonic','confuseray','swagger','flatter','teeterdance','yawn']);
-const sleepMoves          = new Set(['darkvoid','grasswhistle','hypnosis','lovelykiss','sing','sleeppowder','spore']);
-const consumableItems     = new Set(['firegem','watergem','electricgem','grassgem','icegem','fightinggem','poisongem','groundgem','flyinggem','psychicgem','buggem','rockgem','ghostgem','darkgem','steelgem','normalgem','focussash','mentalherb','powerherb','whiteherb','absorbbulb','berserkgene','cellbattery','redcard','airballoon','ejectbutton','shedshell','aguavberry','apicotberry','aspearberry','babiriberry','chartiberry','cheriberry','chestoberry','chilanberry','chopleberry','cobaberry','custapberry','enigmaberry','figyberry','ganlonberry','habanberry','iapapaberry','jabocaberry','kasibberry','kebiaberry','lansatberry','leppaberry','liechiberry','lumberry','magoberry','micleberry','occaberry','oranberry','passhoberry','payapaberry','pechaberry','persimberry','petayaberry','rawstberry','rindoberry','rowapberry','salacberry','shucaberry','sitrusberry','starfberry','tangaberry','wacanberry','wikiberry','yacheberry','keeberry','marangaberry','roseliberry','snowball']);
-const recoilMoves         = new Set(['jumpkick','doubleedge','submission','petaldance','hijumpkick','outrage','volttackle','closecombat','flareblitz','bravebird','woodhammer','headsmash','headcharge','wildcharge','takedown','dragonascent']);
-const sacrificeMoves      = new Set(['selfdestruct','explosion','destinybond','perishsong','memento','healingwish','lunardance','finalgambit']);
-const ohkoMoves           = new Set(['guillotine','fissure','sheercold']);
-const boostItems          = new Set(['expertbelt','wiseglasses','muscleband','dracoplate','dreadplate','earthplate','fistplate','flameplate','icicleplate','insectplate','ironplate','meadowplate','mindplate','skyplate','splashplate','spookyplate','stoneplate','toxicplate','zapplate','blackglasses','charcoal','dragonfang','hardstone','magnet','metalcoat','miracleseed','mysticwater','nevermeltice','poisonbarb','sharpbeak','silkscarf','silverpowder','softsand','spelltag','twistedspoon','pixieplate']);
+const hazeMoves           = new Set(['haze','clearsmog','freezyfrost']);
+const paraMoves           = new Set(['stunspore','thunderwave','glare','nuzzle','stokedsparksurfer','buzzybuzz']);
+const confusionMoves      = new Set(['supersonic','confuseray','sweetkiss','swagger','flatter','teeterdance','chatter']);
+const sleepMoves          = new Set(['sing','sleeppowder','hypnosis','lovelykiss','spore','yawn','grasswhistle','darkvoid']);
+const consumableItems     = new Set([
+  // Gems
+  'firegem','watergem','electricgem','grassgem','icegem','fightinggem','poisongem','groundgem','flyinggem','psychicgem','buggem','rockgem','ghostgem','dragongem','darkgem','steelgem','normalgem','fairygem',
+  // Berries
+  'berryjuice','cheriberry','przcureberry','chestoberry','mintberry','pechaberry','psncureberry','rawstberry','iceberry','aspearberry','burntberry','leppaberry','mysteryberry','oranberry','berry','persimberry',
+  'bitterberry','lumberry','miracleberry','sitrusberry','goldberry','figyberry','wikiberry','magoberry','aguavberry','iapapaberry','razzberry','blukberry','nanabberry','wepearberry','pinapberry','pomegberry',
+  'kelpsyberry','qualotberry','hondewberry','grepaberry','tamatoberry','cornnberry','magostberry','rabutaberry','nomelberry','spelonberry','pamtreberry','watmelberry','durinberry','belueberry','occaberry',
+  'passhoberry','wacanberry','rindoberry','yacheberry','chopleberry','kebiaberry','shucaberry','cobaberry','payapaberry','tangaberry','chartiberry','kasibberry','habanberry','colburberry','babiriberry',
+  'chilanberry','liechiberry','ganlonberry','salacberry','petayaberry','apicotberry','lansatberry','starfberry','enigmaberry','micleberry','custapberry','jabocaberry','rowapberry','roseliberry','keeberry',
+  'marangaberry',
+  // Other
+  'berserkgene','whiteherb','mentalherb','powerherb','focussash','redcard','absorbbulb','cellbattery','ejectbutton','weaknesspolicy','luminousmoss','snowball','adrenalineorb','electricseed','psychicseed',
+  'mistyseed','grassyseed','throatspray','ejectpack','blunderpolicy','roomservice','boosterenergy','mirrorherb',
+]);
+const recoilMoves         = new Set(['jumpkick','takedown','doubleedge','submission','highjumpkick','volttackle','flareblitz','bravebird','woodhammer','headsmash','wildcharge','headcharge','lightofruin','mindblown','steelbeam','wavecrash','axekick','supercellslam']);
+const rampageMoves        = new Set(['thrash','petaldance','outrage','ragingfury']);
+const selfLoweringMoves   = new Set(['superpower','overheat','psychoboost','hammerarm','closecombat','dracometeor','leafstorm','vcreate','dragonascent','hyperspacefury','icehammer','fleurcannon','headlongrush','spinout','makeitrain','armorcannon']);
+const sacrificeMoves      = new Set(['selfdestruct','explosion','destinybond','perishsong','memento','healingwish','lunardance','finalgambit','mistyexplosion']);
+const ohkoMoves           = new Set(['guillotine','horndrill','fissure','sheercold']);
+const boostItems          = new Set(['silverpowder','metalcoat','softsand','hardstone','miracleseed','blackglasses','blackbelt','magnet','mysticwater','sharpbeak','poisonbarb','nevermeltice','spelltag','twistedspoon','charcoal','dragonfang','silkscarf','pinkbow','polkadotbow','seaincense','muscleband','wiseglasses','expertbelt','flameplate','splashplate','zapplate','meadowplate','icicleplate','fistplate','toxicplate','earthplate','skyplate','mindplate','insectplate','stoneplate','spookyplate','dracoplate','dreadplate','ironplate','oddincense','rockincense','waveincense','roseincense','pixieplate','punchingglove','fairyfeather']);
 
 // analyzeTeam
 const batonpassSetupMoves = new Set(['acupressure','bellydrum','bulkup','coil','curse','dragondance','growth','honeclaws','howl','meditate','sharpen','shellsmash','shiftgear','swordsdance','workup','calmmind','chargebeam','fierydance','nastyplot','tailglow','quiverdance','agility','autotomize','flamecharge','rockpolish','doubleteam','minimize','substitute','acidarmor','barrier','cosmicpower','cottonguard','defendorder','defensecurl','harden','irondefense','stockpile','withdraw','amnesia','charge','ingrain']);
 const batonpassAbilities  = new Set(['angerpoint','contrary','moody','moxie','speedboost']);
-const gravityInaccurateMoves = new Set(['guillotine','fissure','sheercold','dynamicpunch','inferno','zapcannon','grasswhistle','sing','supersonic','hypnosis','blizzard','focusblast','gunkshot','hurricane','smog','thunder','clamp','dragonrush','eggbomb','irontail','lovelykiss','magmastorm','megakick','poisonpowder','slam','sleeppowder','stunspore','sweetkiss','willowisp','crosschop','darkvoid','furyswipes','headsmash','hydropump','kinesis','psywave','rocktomb','stoneedge','submission','boneclub','bonerush','bonemerang','bulldoze','dig','drillrun','earthpower','earthquake','magnitude','mudbomb','mudshot','mudslap','sandattack','spikes','toxicspikes']);
-const voltturnMoves       = new Set(['voltswitch','uturn','batonpass']);
+const gravityInaccurateMoves = new Set(['guillotine','horndrill','fissure','sheercold','dynamicpunch','inferno','zapcannon','grasswhistle','sing','supersonic','hypnosis','blizzard','focusblast','gunkshot','hurricane','smog','thunder','clamp','dragonrush','eggbomb','irontail','lovelykiss','magmastorm','megakick','poisonpowder','slam','sleeppowder','stunspore','sweetkiss','willowisp','crosschop','darkvoid','furyswipes','headsmash','hydropump','kinesis','psywave','rocktomb','stoneedge','submission','boneclub','bonerush','bonemerang','bulldoze','dig','drillrun','earthpower','earthquake','magnitude','mudbomb','mudshot','mudslap','sandattack','spikes','toxicspikes']);
+const voltturnMoves       = new Set(['teleport','batonpass','uturn','voltswitch','partingshot','flipturn','shedtail','chillyreception']);
 const trappingMovesTeam   = new Set(['block','meanlook','spiderweb']);
 const trappingAbilities   = new Set(['magnetpull','arenatrap','shadowtag']);
-const dragonSpecies       = new Set(['dratini','dragonair','bagon','shelgon','axew','fraxure','haxorus','druddigon','dragonite','altaria','salamence','latias','latios','rayquaza','gible','gabite','garchomp','reshiram','zekrom','kyurem','kyuremwhite','kyuremblack','kingdra','vibrava','flygon','dialga','palkia','giratina','giratinaorigin','deino','zweilous','hydreigon']);
+const dragonSpecies       = new Set([
+  'dratini','dragonair','dragonite',
+  'kingdra',
+  'vibrava','flygon','altaria','bagon','shelgon','salamence','latias','latios','rayquaza',
+  'gible','gabite','garchomp','dialga','palkia','giratina','giratinaorigin','arceusdragon',
+  'axew','fraxure','haxorus','druddigon','deino','zweilous','hydreigon','reshiram','zekrom','kyurem','kyuremblack','kyuremwhite',
+  'charizardmegax','ampharosmega','sceptilemega','altariamega','salamencemega','latiasmega','latiosmega','rayquazamega','garchompmega','dragalge','tyrunt','tyrantrum','goomy','sliggoo','goodra','noibat','noivern','zygarde',
+  'exeggutoralola','zygarde10','zygardecomplete','silvallydragon','turtonator','drampa','jangmoo','hakamoo','kommoo','kommoototem','guzzlord','necrozmaultra','naganadel',
+  'dialgaorigin','palkiaorigin','sliggoohisui','goodrahisui','applin','flapple','appletun','dracozolt','dracovish','duraludon','dreepy','drakloak','dragapult','eternatus','eternatuseternamax','regidrago','cyclizar','tatsugiri','tatsugiridroopy','tatsugiristretchy','tatsugiricurlymega','tatsugiridroopymega','tatsugiristretchymega','frigibax','arctibax','baxcalibur','baxcaliburmega','roaringmoon','koraidon','miraidon','walkingwake','dipplin','archaludon','hydrapple','gougingfire','ragingbolt','dragonitemega','feraligatrmega','garchompmegaz','dragalgemega','zygardemega','drampamega',
+]);
 const swagplayMoves       = new Set(['foulplay','swagger']);
 
 // team type detection
@@ -284,7 +308,8 @@ export function analyzePoke(poke: PokeInput): [number, number] | null {
   if (['arenatrap','magnetpull','shadowtag'].includes(poke.ability)) stalliness -= 1.0;
   else if ([...trappingMoves].some(m => moves.has(m))) stalliness -= 0.5;
   if (defensiveAbilities.has(poke.ability)) stalliness += 0.5;
-  if (poke.ability === 'poisonheal' && poke.item === 'toxicorb') stalliness += 0.5;
+  if (poke.item === 'leftovers') stalliness += 0.25;
+  else if (poke.ability === 'poisonheal' && poke.item === 'toxicorb') stalliness += 0.5;
   if (['slowstart','truant','furcoat'].includes(poke.ability)) stalliness += 1.0;
   if (poke.item === 'lightclay') stalliness -= 1.0;
   if (moves.has('bellydrum')) stalliness -= 2.0;
@@ -306,7 +331,7 @@ export function analyzePoke(poke: PokeInput): [number, number] | null {
   if (poke.item === 'rockyhelmet') stalliness += 0.5;
   if (consumableItems.has(poke.item)) stalliness -= 0.5;
   if (poke.ability === 'harvest' || moves.has('recycle')) stalliness += 1.0;
-  if ([...recoilMoves].some(m => moves.has(m))) stalliness -= 0.5;
+  if ([...recoilMoves,...rampageMoves,...selfLoweringMoves].some(m => moves.has(m))) stalliness -= 0.5;
   if ([...sacrificeMoves].some(m => moves.has(m))) stalliness -= 1.0;
   if ([...ohkoMoves].some(m => moves.has(m))) stalliness -= 1.0;
   if (['sandstream','snowwarning'].includes(poke.ability) || moves.has('sandstorm') || moves.has('hail')) stalliness += 0.5;
@@ -371,9 +396,21 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
       const mega: PokeInput = { ...poke, species: 'darmanitanzen' };
       const r = analyzePoke(mega);
       if (r) { stalliness = (stalliness + r[0]) / 2.0; }
+    } else if (species === 'darmanitangalar' && poke.ability === 'zenmode') {
+      const mega: PokeInput = { ...poke, species: 'darmanitangalarzen' };
+      const r = analyzePoke(mega);
+      if (r) { stalliness = (stalliness + r[0]) / 2.0; }
     } else if (species === 'rayquaza' && poke.moves.includes('dragonascent')) {
       const mega: PokeInput = { ...poke, species: 'rayquazamega', ability: 'deltastream' };
       const r = analyzePoke(mega);
+      if (r) { stalliness = (stalliness + r[0]) / 2.0; }
+    } else if (species === 'zacian' && poke.item === 'rustedsword') {
+      const crowned: PokeInput = { ...poke, species: 'zaciancrowned', ability: 'intrepidsword' };
+      const r = analyzePoke(crowned);
+      if (r) { stalliness = (stalliness + r[0]) / 2.0; }
+    } else if (species === 'zamazenta' && poke.item === 'rustedshield') {
+      const crowned: PokeInput = { ...poke, species: 'zamazentacrowned', ability: 'dauntlessshield' };
+      const r = analyzePoke(crowned);
       if (r) { stalliness = (stalliness + r[0]) / 2.0; }
     } else {
       const megaAbility = getMegaAbility(species, poke.item);
@@ -419,7 +456,7 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
   // sun
   count = 0; detected = false;
   for (const poke of team) {
-    if (['drought','desolateland'].includes(poke.ability)) { detected = true; break; }
+    if (['drought','desolateland','orichalcumpulse'].includes(poke.ability)) { detected = true; break; }
     if ([keyify(poke.species), poke.item].join(',') === 'charizard,charizarditey') { detected = true; break; }
     if (poke.item === 'heatrock' && poke.moves.includes('sunnyday')) { detected = true; break; }
     if (poke.moves.includes('sunnyday')) { count++; if (count > 1) { detected = true; break; } }
@@ -435,14 +472,14 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
   }
   if (detected) tags.push('sand');
 
-  // hail
+  // snow
   count = 0; detected = false;
   for (const poke of team) {
     if (poke.ability === 'snowwarning') { detected = true; break; }
-    if (poke.item === 'icyrock' && poke.moves.includes('hail')) { detected = true; break; }
-    if (poke.moves.includes('hail')) { count++; if (count > 1) { detected = true; break; } }
+    if (poke.item === 'icyrock' && (poke.moves.includes('snowscape') || poke.moves.includes('chillyreception'))) { detected = true; break; }
+    if (poke.moves.includes('snowscape') || poke.moves.includes('chillyreception')) { count++; if (count > 1) { detected = true; break; } }
   }
-  if (detected) tags.push('hail');
+  if (detected) tags.push('snow');
 
   if (tags.length === 4) tags.push('allweather');
   else if (tags.length > 1) tags.push('multiweather');
@@ -451,6 +488,10 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
   // baton pass
   count = 0;
   for (const poke of team) {
+    if (poke.moves.includes('shedtail')) {
+      count++;
+      continue;
+    }
     if (poke.moves.includes('batonpass')) {
       if (poke.moves.some(m => batonpassSetupMoves.has(m)) || batonpassAbilities.has(poke.ability)) {
         count++;
@@ -483,7 +524,7 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
     if (tags.includes('sun')) tags.push('tricksun');
     if (tags.includes('rain')) tags.push('trickrain');
     if (tags.includes('sand')) tags.push('tricksand');
-    if (tags.includes('hail')) tags.push('trickhail');
+    if (tags.includes('snow')) tags.push('tricksnow');
   }
 
   // gravity
@@ -522,7 +563,7 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
   if (fearCount[0] > 1 && fearCount[1] > 2) {
     tags.push('fear');
     if (tags.includes('sand')) tags.push('sandfear');
-    if (tags.includes('hail')) tags.push('hailfear');
+    // if (tags.includes('hail')) tags.push('hailfear');
     if (tags.includes('trickroom')) tags.push('trickfear');
   }
 
@@ -561,7 +602,7 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
       if (tags.includes('rain')) tags.push('rainoffense');
       else if (tags.includes('sun')) tags.push('sunoffense');
       else if (tags.includes('sand')) tags.push('sandoffense');
-      else tags.push('hailoffense');
+      else tags.push('snowoffense');
     }
   } else if (tstalliness <= 0.0) {
     tags.push('offense');
@@ -575,7 +616,7 @@ export function analyzeTeam(team: PokeInput[]): TeamAnalysis | null {
       if (tags.includes('rain')) tags.push('rainstall');
       else if (tags.includes('sun')) tags.push('sunstall');
       else if (tags.includes('sand')) tags.push('sandstall');
-      else tags.push('hailstall');
+      else tags.push('snowstall');
     }
   }
 
