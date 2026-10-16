@@ -13,6 +13,7 @@
 
 import * as fs from 'fs';
 import * as fsp from 'fs/promises';
+import type { FileHandle } from 'fs/promises';
 import * as path from 'path';
 import * as zlib from 'zlib';
 import * as os from 'os';
@@ -151,6 +152,9 @@ function getBaseSpecies(species: string): string {
   return species;
 }
 
+const hpTypes = ['fighting','flying','poison','ground','rock','bug','ghost','steel',
+                 'fire','water','grass','electric','psychic','ice','dragon','dark'];
+
 function getTeamsFromLog(
   log: Record<string, unknown>,
   mrayAllowed: boolean,
@@ -212,8 +216,6 @@ function getTeamsFromLog(
           15 * (ivs['hp'] % 2 + 2 * (ivs['atk'] % 2) + 4 * (ivs['def'] % 2) +
                 8 * (ivs['spe'] % 2) + 16 * (ivs['spa'] % 2) + 32 * (ivs['spd'] % 2)) / 63
         );
-        const hpTypes = ['fighting','flying','poison','ground','rock','bug','ghost','steel',
-                         'fire','water','grass','electric','psychic','ice','dragon','dark'];
         moves.splice(hpIdx, 1);
         moves.unshift('hiddenpower' + hpTypes[hpType]);
       }
@@ -300,11 +302,55 @@ function getTeamsFromLog(
 
 async function readLogFile(filename: string): Promise<string | false> {
   try {
-    const raw = await fsp.readFile(filename, 'utf-8');
-    return raw.split('\n')[0];
+    return await fsp.readFile(filename, 'utf-8');
   } catch {
     return false;
   }
+}
+
+function parsePipeLine(line: string): string[] {
+  const parsed = line.split('|');
+  if (parsed.length > 1) parsed[1] = parsed[1].trim();
+  if (parsed.length > 2) parsed[2] = parsed[2].trim();
+  if (parsed.length > 3) parsed[3] = parsed[3].trim();
+  return parsed;
+}
+
+function tsKey(trainer: string, species: string): string {
+  return `${trainer}|||${species}`;
+}
+
+// resolve which slot in `ts` a switch/drag/replace log line refers to
+function resolveActiveIndex(
+  parsed: string[],
+  ts: [string, string][],
+  tsIndex: Map<string, number>,
+  filename: string,
+  lengthErrorTag: string,
+  notFoundErrorTag: string,
+  pOverride?: number
+): { p: number; idx: number } | false {
+  if (parsed.length < 4) {
+    process.stderr.write(`Problem with ${filename} (${lengthErrorTag})\n`);
+    return false;
+  }
+  const p = pOverride ?? (parseInt(parsed[2][1]) - 1);
+  let species = parsed[3].split(',')[0]; // remove gender
+  species = reverseAliases[species] ?? species;
+  const trainer = ts[11 * p][0];
+  const key = tsKey(trainer, species);
+  if (tsIndex.has(key)) {
+    return { p, idx: tsIndex.get(key)! };
+  }
+
+  const base = getBaseSpecies(species);
+  for (let i = 6 * p; i < 6 * (p + 1); i++) {
+    if (ts[i][1].startsWith(base)) {
+      return { p, idx: i };
+    }
+  }
+  process.stderr.write(`Problem with ${filename}\n(${species} not in ts) (${notFoundErrorTag})\n`);
+  return false;
 }
 
 function LogReader(
@@ -335,16 +381,29 @@ function LogReader(
   let whowon = 0; // 0 for tie/unknown, 1 for p1, 2 for p2
   const p1 = log['p1'] as string;
   const p2 = log['p2'] as string;
-  const winP1 = '|win|' + p1;
-  const winP2 = '|win|' + p2;
-  for (const line of logLines) {
-    if (line === winP1) { whowon = 1; break; }
-    if (line === winP2) { whowon = 2; break; }
+
+  // the server already computed the winner; just read it
+  const rawWinner = log['winner'];
+  const winner = typeof rawWinner === 'string' ? rawWinner : undefined;
+
+  if (winner === p1) {
+    whowon = 1;
+  } else if (winner === p2) {
+    whowon = 2;
+  } else if (winner) {
+    // 'winner' is present but doesn't match either player name
+    const winP1 = '|win|' + p1;
+    const winP2 = '|win|' + p2;
+    for (const line of logLines) {
+      if (line === winP1) { whowon = 1; break; }
+      if (line === winP2) { whowon = 2; break; }
+    }
+    if (whowon !== 0 && logLines.includes(whowon === 1 ? winP2 : winP1)) {
+      process.stderr.write(filename + '\nThis battle had two winners.\n');
+      return false;
+    }
   }
-  if (whowon !== 0 && logLines.includes(whowon === 1 ? winP2 : winP1)) {
-    process.stderr.write(filename + '\nThis battle had two winners.\n');
-    return false;
-  }
+  // winner === '' or missing: tie/unknown
 
   // get info on the players & pokes involved
   const rating: Record<string, RatingInfo> = {};
@@ -437,7 +496,6 @@ function LogReader(
   }
 
   const tsIndex: Map<string, number> = new Map(ts.map((e, i) => [`${e[0]}|||${e[1]}`, i]));
-  const tsKey = (trainer: string, species: string) => `${trainer}|||${species}`;
 
   // metrics get declared here
   const turnsOut: number[] = new Array(12).fill(0); // turns out on the field (a measure of stall)
@@ -451,63 +509,17 @@ function LogReader(
     for (let lineIdx = 0; lineIdx < logLines.length; lineIdx++) {
       const line = logLines[lineIdx];
       if (!line.startsWith('|')) continue;
-      const parsed = line.split('|').map(s => s.trim());
+      const parsed = parsePipeLine(line);
       if (parsed.length < 2) continue;
 
       if (parsed[1] === 'switch' && parsed[2].startsWith('p1')) {
-        if (parsed.length < 4) {
-          process.stderr.write(`Problem with ${filename} (3)\n`);
-          return false;
-        }
-        let species = parsed[3].split(',')[0]; // remove gender
-        species = reverseAliases[species] ?? species;
-        const key = tsKey(ts[0][0], species);
-        if (tsIndex.has(key)) {
-          active[0] = tsIndex.get(key)!;
-        } else {
-          const base = getBaseSpecies(species);
-          let found = false;
-          for (let i = 0; i < 6; i++) {
-            if (ts[i][1].startsWith(base)) {
-              species = ts[i][1];
-              active[0] = i;
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            process.stderr.write(`Problem with ${filename}\n(${species} not in ts) (1)\n`);
-            return false;
-          }
-        }
-      }
-
-      if (parsed[1] === 'switch' && parsed[2].startsWith('p2')) {
-        if (parsed.length < 4) {
-          process.stderr.write(`Problem with ${filename} (4)\n`);
-          return false;
-        }
-        let species = parsed[3].split(',')[0];
-        species = reverseAliases[species] ?? species;
-        const key = tsKey(ts[11][0], species);
-        if (tsIndex.has(key)) {
-          active[1] = tsIndex.get(key)!;
-        } else {
-          const base = getBaseSpecies(species);
-          let found = false;
-          for (let i = 6; i < 12; i++) {
-            if (ts[i][1].startsWith(base)) {
-              species = ts[i][1];
-              active[1] = i;
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            process.stderr.write(`Problem with ${filename}\n(${species} not in ts) (2)\n`);
-            return false;
-          }
-        }
+        const resolved = resolveActiveIndex(parsed, ts, tsIndex, filename, '3', '1', 0);
+        if (resolved === false) return false;
+        active[0] = resolved.idx;
+      } else if (parsed[1] === 'switch' && parsed[2].startsWith('p2')) {
+        const resolved = resolveActiveIndex(parsed, ts, tsIndex, filename, '4', '2', 1);
+        if (resolved === false) return false;
+        active[1] = resolved.idx;
         startIdx = lineIdx + 1;
         break;
       }
@@ -519,9 +531,10 @@ function LogReader(
     let switchFlag: [boolean, boolean] = [false, false];
     let mtemp: MatchupRecord[] = [];
 
-    for (const line of logLines.slice(startIdx)) {
+    for (let lineIdx = startIdx; lineIdx < logLines.length; lineIdx++) {
+      const line = logLines[lineIdx];
       if (!line.startsWith('|')) continue;
-      const parsed = line.split('|').map(s => s.trim());
+      const parsed = parsePipeLine(line);
       if (parsed.length < 2) continue;
       const linetype = parsed[1];
 
@@ -575,31 +588,9 @@ function LogReader(
         if (uturn) { uturn = false; uturnko = true; }
 
       } else if (linetype === 'replace') { // it was Zorua/Zoroark all along!
-        if (parsed.length < 4) {
-          process.stderr.write(`Problem with ${filename} (5)\n`);
-          return false;
-        }
-        let species = parsed[3].split(',')[0];
-        species = reverseAliases[species] ?? species;
-        const p = parseInt(parsed[2][1]) - 1;
-        const trainer = ts[11 * p][0];
-        const key = tsKey(trainer, species);
-        if (!tsIndex.has(key)) {
-          const base = getBaseSpecies(species);
-          let found = false;
-          for (let i = 6 * p; i < 6 * (p + 1); i++) {
-            if (ts[i][1].startsWith(base)) {
-              species = ts[i][1];
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            process.stderr.write(`Problem with ${filename}\n(${species} not in ts) (3)\n`);
-            return false;
-          }
-        }
-        active[p] = tsIndex.get(tsKey(trainer, species)) ?? active[p];
+        const resolved = resolveActiveIndex(parsed, ts, tsIndex, filename, '5', '3');
+        if (resolved === false) return false;
+        active[resolved.p] = resolved.idx;
 
       } else if (linetype === 'switch' || linetype === 'drag') { // switch out: new matchup!
         const p = parseInt(parsed[2][1]) - 1;
@@ -639,30 +630,9 @@ function LogReader(
         uturn = roar = fodder = false;
         hazard = true;
 
-        if (parsed.length < 4) {
-          process.stderr.write(`Problem with ${filename} (6)\n`);
-          return false;
-        }
-        let species = parsed[3].split(',')[0];
-        species = reverseAliases[species] ?? species;
-        const trainer = ts[11 * p][0];
-        const key = tsKey(trainer, species);
-        if (!tsIndex.has(key)) {
-          const base = getBaseSpecies(species);
-          let found = false;
-          for (let i = 6 * p; i < 6 * (p + 1); i++) {
-            if (ts[i][1].startsWith(base)) {
-              species = ts[i][1];
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            process.stderr.write(`Problem with ${filename}\n(${species} not in ts) (4)\n`);
-            return false;
-          }
-        }
-        active[p] = tsIndex.get(tsKey(trainer, species)) ?? active[p];
+        const resolved = resolveActiveIndex(parsed, ts, tsIndex, filename, '6', '4', p);
+        if (resolved === false) return false;
+        active[p] = resolved.idx;
       }
     }
   }
@@ -721,14 +691,15 @@ function LogReader(
 
 // gzip all movesets in parallel
 async function flushAsync(
-  outBattle: string,
+  battleHandle: FileHandle,
   msDirPath: string,
+  msHandles: Map<string, FileHandle>,
   writeme: BattleRecord[],
   movesets: Record<string, WriteableMatchup[]>
 ): Promise<void> {
   if (writeme.length > 0) {
     const compressed = await gzipAsync(JSON.stringify(writeme) + '\n');
-    await fsp.appendFile(outBattle, compressed);
+    await battleHandle.write(compressed);
   }
   await Promise.all(
     Object.keys(movesets).map(async species => {
@@ -737,7 +708,12 @@ async function flushAsync(
         return;
       }
       const data = await gzipAsync(JSON.stringify(movesets[species]));
-      await fsp.appendFile(path.join(msDirPath, species), data);
+      let handle = msHandles.get(species);
+      if (!handle) {
+        handle = await fsp.open(path.join(msDirPath, species), 'a');
+        msHandles.set(species, handle);
+      }
+      await handle.write(data);
       delete movesets[species];
     })
   );
@@ -757,6 +733,9 @@ async function runWorker(input: WorkerInput): Promise<WorkerResult> {
   const tmpMsDir  = path.join(tmpDir, `ms_${workerId}`);
   fs.mkdirSync(tmpMsDir, { recursive: true });
 
+  const battleHandle = await fsp.open(tmpBattle, 'a');
+  const msHandles = new Map<string, FileHandle>();
+
   let writeme: BattleRecord[] = [];
   const movesets: Record<string, WriteableMatchup[]> = {};
   let count = 0;
@@ -775,15 +754,24 @@ async function runWorker(input: WorkerInput): Promise<WorkerResult> {
         writeme.push(x);
         count++;
         if (count % 5000 === 0) { // write to moveset file
-          await flushAsync(tmpBattle, tmpMsDir, writeme, movesets);
+          await flushAsync(battleHandle, tmpMsDir, msHandles, writeme, movesets);
           writeme = [];
         }
       }
     }
   }
-  await flushAsync(tmpBattle, tmpMsDir, writeme, movesets);
+  await flushAsync(battleHandle, tmpMsDir, msHandles, writeme, movesets);
+
+  await battleHandle.close();
+  await Promise.all([...msHandles.values()].map(h => h.close()));
 
   return { workerId, count, tmpBattle, tmpMsDir };
+}
+
+async function appendFileToHandle(handle: FileHandle, srcPath: string): Promise<void> {
+  for await (const chunk of fs.createReadStream(srcPath)) {
+    await handle.write(chunk);
+  }
 }
 
 // Merge output into final Raw/ files
@@ -800,7 +788,7 @@ async function mergeWorkerOutput(
   const battleHandle = await fsp.open(outBattle, 'a');
   for (const { tmpBattle } of results) {
     try {
-      await battleHandle.write(await fsp.readFile(tmpBattle));
+      await appendFileToHandle(battleHandle, tmpBattle);
     } catch { /* worker had no output */ }
   }
   await battleHandle.close();
@@ -817,7 +805,7 @@ async function mergeWorkerOutput(
     for (const { tmpMsDir } of results) {
       const src = path.join(tmpMsDir, species);
       try {
-        await handle.write(await fsp.readFile(src));
+        await appendFileToHandle(handle, src);
       } catch { /* species not in this worker */ }
     }
     await handle.close();
@@ -853,32 +841,52 @@ async function main(argv: string[]): Promise<void> {
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'usage-stats-'));
 
-  let workerResults: WorkerResult[];
-  if (numWorkers <= 1) {
-    const input: WorkerInput = { files: chunks[0], logDir, tier, workerId: 0, tmpDir };
-    workerResults = [await runWorker(input)];
-  } else {
-    workerResults = await new Promise<WorkerResult[]>((resolve, reject) => {
-      const results: WorkerResult[] = [];
-      let done = 0;
-      for (let w = 0; w < chunks.length; w++) {
-        const input: WorkerInput = { files: chunks[w], logDir, tier, workerId: w, tmpDir };
-        const worker = new Worker(__filename, { workerData: input });
-        worker.on('message', (msg: WorkerResult) => {
-          results.push(msg);
-          if (++done === chunks.length) resolve(results);
-        });
-        worker.on('error', reject);
-      }
-    });
+  try {
+    let workerResults: WorkerResult[];
+    if (numWorkers <= 1) {
+      const input: WorkerInput = { files: chunks[0], logDir, tier, workerId: 0, tmpDir };
+      workerResults = [await runWorker(input)];
+    } else {
+      workerResults = await new Promise<WorkerResult[]>((resolve, reject) => {
+        const results: WorkerResult[] = [];
+        let done = 0;
+        let settled = false;
+        for (let w = 0; w < chunks.length; w++) {
+          const input: WorkerInput = { files: chunks[w], logDir, tier, workerId: w, tmpDir };
+          const worker = new Worker(__filename, { workerData: input });
+          worker.on('message', (msg: WorkerResult) => {
+            results.push(msg);
+            if (++done === chunks.length && !settled) {
+              settled = true;
+              resolve(results);
+            }
+          });
+          worker.on('error', (err) => {
+            if (!settled) {
+              settled = true;
+              reject(err);
+            }
+          });
+          worker.on('exit', (code) => {
+            // a worker that exits without posting its result would otherwise
+            // leave this Promise pending forever and hang the whole run
+            if (code !== 0 && !settled) {
+              settled = true;
+              reject(new Error(`Worker ${w} exited with code ${code} before completing`));
+            }
+          });
+        }
+      });
+    }
+
+    await mergeWorkerOutput(tier, workerResults);
+
+    // const total = workerResults.reduce((s, r) => s + r.count, 0);
+    // console.log(`Total logs processed: ${total}`);
+  } finally {
+    // clean up even if a worker crashed or the merge step threw
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   }
-
-  await mergeWorkerOutput(tier, workerResults);
-
-  fs.rmSync(tmpDir, { recursive: true, force: true });
-
-  // const total = workerResults.reduce((s, r) => s + r.count, 0);
-  // console.log(`Total logs processed: ${total}`);
 }
 
 if (!isMainThread) {
