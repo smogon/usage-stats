@@ -45,6 +45,7 @@ interface PokeEntry { species: string; turnsOut: number; KOs: number; }
 interface PlayerRecord {
   tags: string[]; stalliness: number; team: PokeEntry[];
   rating?: RatingInfo; outcome?: 'win' | 'loss';
+  isBot?: boolean;
 }
 
 interface BattleRecord {
@@ -83,7 +84,8 @@ ensureDir(metagameFilename);
 
 const writeMetagame = !['1v1', 'challengecup1v1'].includes(tier);
 
-let battleCount = 0;
+let battleCount = 0; // battles with at least one non-bot team
+let teamCount = 0;   // non-bot teams
 
 const counter: Record<'raw' | 'real' | 'weighted', Map<string, number>> = {
   raw: new Map(), real: new Map(), weighted: new Map(),
@@ -120,9 +122,14 @@ function processBattle(battle: BattleRecord): void {
     else if (battle.turns! < 2) return;
   }
 
+  const bots = (['p1', 'p2'] as const).filter(p => battle[p].isBot);
+  if (bots.length === 2) return;
+
   const weight: Record<string, number> = {};
 
   for (const player of ['p1', 'p2'] as const) {
+    if (battle[player].isBot) continue;
+    teamCount++; // counted before the teamtype filter, matching the old battleCount * 2
     if (teamtype && !battle[player].tags.includes(teamtype)) continue;
 
     const team: string[] = [];
@@ -218,7 +225,7 @@ function processBattle(battle: BattleRecord): void {
     }
 
     // encounter Matrix
-    if (!teamtype) {
+    if (!teamtype && bots.length === 0) { // matchups involve both teams, skip any battle with a bot
       const w = Math.min(...Object.values(weight));
       for (const matchup of battle.matchups) {
         const [poke1, poke2, outcome] = matchup;
@@ -237,7 +244,7 @@ function processBattle(battle: BattleRecord): void {
   }
 
   // monotype matchup matrix
-  if (writeMonotype) {
+  if (writeMonotype && bots.length === 0) {
     const p1Type = battle.p1.tags.find(tag => tag in monoTypeIndex);
     const p2Type = battle.p2.tags.find(tag => tag in monoTypeIndex);
     if (p1Type !== undefined && p2Type !== undefined) {
@@ -316,7 +323,7 @@ function writeOutput(): void {
 
   const usageLines: string[] = [];
   usageLines.push(`Total battles: ${battleCount}`);
-  const avgWeight = battleCount > 0 ? (total['weighted'] / battleCount / 12).toFixed(3) : '0';
+  const avgWeight = teamCount > 0 ? (total['weighted'] / teamCount / 6).toFixed(3) : '0';
   usageLines.push(`Avg. weight/team: ${avgWeight}`);
   usageLines.push('+ ---- + ------------------ + --------- + ------ + ------- + ------ + ------- +');
   usageLines.push('| Rank | Pokemon            | Usage %   | Raw    | %       | Real   | %       |');
@@ -326,7 +333,7 @@ function writeOutput(): void {
     if (raw === 0) break;
     usageLines.push(
       `| ${String(i + 1).padEnd(4)} | ${name.padEnd(18)} | ` +
-      `${(100.0 * weighted / total['weighted'] * 6.0).toFixed(5).padStart(8)}% | ` +
+      `${(total['weighted'] > 0 ? 100.0 * weighted / total['weighted'] * 6.0 : 0).toFixed(5).padStart(8)}% | ` +
       `${String(raw).padEnd(6)} | ${(100.0 * raw / total['raw'] * 6.0).toFixed(3).padStart(6)}% | ` +
       `${String(real).padEnd(6)} | ${(total['real'] > 0 ? 100.0 * real / total['real'] * 6.0 : 0).toFixed(3).padStart(6)}% |`
     );
@@ -346,7 +353,7 @@ function writeOutput(): void {
     leadPokes.sort((a, b) => b[2] - a[2]);
     const totalLeadWeighted = Math.max([...leadCounter.weighted.values()].reduce((a, b) => a + b, 0), 1.0);
     const totalLeadRaw      = Math.max([...leadCounter.raw.values()].reduce((a, b) => a + b, 0), 1.0);
-    leadsLines.push(`Total leads: ${battleCount * 2}`);
+    leadsLines.push(`Total leads: ${teamCount}`);
     leadsLines.push('+ ---- + ------------------ + --------- + ------ + ------- +');
     leadsLines.push('| Rank | Pokemon            | Usage %   | Raw    | %       |');
     leadsLines.push('+ ---- + ------------------ + --------- + ------ + ------- +');
@@ -369,7 +376,7 @@ function writeOutput(): void {
     const tags: [string, number][] = [...tagCounter.entries()].sort((a, b) => b[1] - a[1]);
     for (const [tag, count] of tags) {
       const dots = '.'.repeat(Math.max(0, 18 - tag.length));
-      metagameLines.push(`${tag}${dots}${(100.0 * count / total['weighted'] * 6.0).toFixed(5)}%`);
+      metagameLines.push(`${tag}${dots}${(total['weighted'] > 0 ? 100.0 * count / total['weighted'] * 6.0 : 0).toFixed(5)}%`);
     }
     metagameLines.push('');
 

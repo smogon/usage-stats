@@ -220,7 +220,9 @@ function movesetCounter(
     }
   }
 
-  const count = Object.values(abilities).reduce((a, b) => a + b, 0);
+  // avoid NaN if every weight was 0
+  const rawTotal = Object.values(abilities).reduce((a, b) => a + b, 0);
+  const count = rawTotal || 1;
   const sortedGXEs = Object.values(gxes).sort((a, b) => b - a);
 
   // teammate stats

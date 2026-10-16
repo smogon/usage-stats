@@ -86,6 +86,7 @@ interface BattleRecord {
     tags?: string[];
     outcome?: string;
     rating?: RatingInfo;
+    isBot?: boolean;
     team: { species: string; KOs: number; turnsOut: number }[];
   };
   p2: {
@@ -95,6 +96,7 @@ interface BattleRecord {
     tags?: string[];
     outcome?: string;
     rating?: RatingInfo;
+    isBot?: boolean;
     team: { species: string; KOs: number; turnsOut: number }[];
   };
   matchups: MatchupRecord[];
@@ -421,6 +423,15 @@ function LogReader(
     }
   }
 
+  // players flagged as bots don't count towards usage
+  const isBot: Record<'p1team' | 'p2team', boolean> = { p1team: false, p2team: false };
+  for (const [ratingKey, teamKey] of [['p1rating', 'p1team'], ['p2rating', 'p2team']] as const) {
+    const r = log[ratingKey];
+    if (typeof r === 'object' && r !== null && (r as Record<string, unknown>)['isBot'] === true) {
+      isBot[teamKey] = true;
+    }
+  }
+
   // get pokemon info
   const teams = getTeamsFromLog(log, mrayAllowed, filename);
   if (teams === false) {
@@ -453,7 +464,9 @@ function LogReader(
     });
 
     const sanitisedTrainer = sanitiseTrainer(trainer);
-    for (const poke of (teams[team] as PokeData[]).slice(0, -1)) {
+    // bot teams are left out of the moveset files entirely
+    const movesetPokes = isBot[team] ? [] : (teams[team] as PokeData[]).slice(0, -1);
+    for (const poke of movesetPokes) {
       if (keyify(poke.species) === 'meloettapirouette') console.log(filename);
       const entry: WriteableMatchup = {
         trainer: sanitisedTrainer,
@@ -671,6 +684,7 @@ function LogReader(
       tags: p1Tags.tags,
       ...(p1Tags.outcome ? { outcome: p1Tags.outcome } : {}),
       ...(p1Tags.rating ? { rating: p1Tags.rating } : {}),
+      ...(isBot.p1team ? { isBot: true } : {}),
       team: p1TeamOut,
     },
     p2: {
@@ -680,6 +694,7 @@ function LogReader(
       tags: p2Tags.tags,
       ...(p2Tags.outcome ? { outcome: p2Tags.outcome } : {}),
       ...(p2Tags.rating ? { rating: p2Tags.rating } : {}),
+      ...(isBot.p2team ? { isBot: true } : {}),
       team: p2TeamOut,
     },
     matchups,
